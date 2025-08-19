@@ -33,9 +33,18 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 shadow-2xl">
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="w-full">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+          <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Email Security Analysis
+          </span>
+        </h2>
+        <p className="text-gray-300">
+          Enter your domain to get instant email authentication analysis
+        </p>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="domain" className="block text-sm font-medium text-gray-300 mb-3">
               Enter your domain name for instant analysis
@@ -166,7 +175,6 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 }

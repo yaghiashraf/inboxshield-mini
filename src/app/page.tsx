@@ -174,24 +174,25 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Domain Input and Results Section */}
+          {/* Unified Security Analysis Box */}
           <div id="scan" className="scroll-mt-20">
-            <div className={`grid gap-8 max-w-7xl mx-auto ${checkResult ? 'lg:grid-cols-2' : 'max-w-2xl'}`}>
-              {/* Domain Input */}
-              <div className="w-full">
-                <DomainInput 
-                  onSubmit={handleDomainCheck} 
-                  isLoading={isLoading}
-                  error={error}
-                />
-              </div>
-
-              {/* Results - appears next to input on larger screens */}
-              {checkResult && (
-                <div className="w-full">
-                  <PreviewResults result={checkResult} />
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl border border-gray-700/50 shadow-2xl overflow-hidden">
+                <div className="p-8">
+                  <DomainInput 
+                    onSubmit={handleDomainCheck} 
+                    isLoading={isLoading}
+                    error={error}
+                  />
+                  
+                  {/* Results appear in same box with smooth transition */}
+                  {checkResult && (
+                    <div className="mt-8 pt-8 border-t border-gray-600/30 animate-in slide-in-from-bottom-4 fade-in duration-700">
+                      <PreviewResults result={checkResult} />
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
