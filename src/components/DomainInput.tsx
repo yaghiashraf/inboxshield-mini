@@ -141,7 +141,7 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
           </div>
         )}
         
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center space-y-3">
           <div className="inline-flex items-center space-x-2 bg-gray-700/50 rounded-lg px-4 py-2 border border-gray-600/50">
             <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -150,6 +150,20 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
               Free preview • Full report with fixes only 
             </span>
             <span className="font-bold text-blue-400">$12</span>
+          </div>
+          <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
+            <div className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+              <span>No signup required</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+              <span>Instant results</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
+              <span>Secure & private</span>
+            </div>
           </div>
         </div>
       </div>

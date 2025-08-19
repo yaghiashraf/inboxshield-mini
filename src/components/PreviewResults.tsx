@@ -92,8 +92,8 @@ export function PreviewResults({ result }: PreviewResultsProps) {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {/* SPF */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm ${getStatusColor(result.spf.status)}`}>
-          <div className="flex items-center gap-3 mb-3">
+        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.spf.status)}`}>
+          <div className="flex items-center gap-3">
             <span className="text-2xl">{getStatusIcon(result.spf.status)}</span>
             <div>
               <span className="font-bold text-lg">SPF</span>
@@ -101,7 +101,7 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             </div>
           </div>
           {result.spf.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium">
+            <div className="flex items-center gap-2 text-xs font-medium mt-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -111,8 +111,8 @@ export function PreviewResults({ result }: PreviewResultsProps) {
         </div>
 
         {/* DMARC */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm ${getStatusColor(result.dmarc.status)}`}>
-          <div className="flex items-center gap-3 mb-3">
+        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.dmarc.status)}`}>
+          <div className="flex items-center gap-3">
             <span className="text-2xl">{getStatusIcon(result.dmarc.status)}</span>
             <div>
               <span className="font-bold text-lg">DMARC</span>
@@ -120,7 +120,7 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             </div>
           </div>
           {result.dmarc.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium">
+            <div className="flex items-center gap-2 text-xs font-medium mt-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -130,8 +130,8 @@ export function PreviewResults({ result }: PreviewResultsProps) {
         </div>
 
         {/* DKIM */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm ${getStatusColor(result.dkim.status)}`}>
-          <div className="flex items-center gap-3 mb-3">
+        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.dkim.status)}`}>
+          <div className="flex items-center gap-3">
             <span className="text-2xl">{getStatusIcon(result.dkim.status)}</span>
             <div>
               <span className="font-bold text-lg">DKIM</span>
@@ -139,7 +139,7 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             </div>
           </div>
           {result.dkim.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium">
+            <div className="flex items-center gap-2 text-xs font-medium mt-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -149,8 +149,8 @@ export function PreviewResults({ result }: PreviewResultsProps) {
         </div>
 
         {/* BIMI */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm ${getStatusColor(result.bimi.status)}`}>
-          <div className="flex items-center gap-3 mb-3">
+        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.bimi.status)}`}>
+          <div className="flex items-center gap-3">
             <span className="text-2xl">{getStatusIcon(result.bimi.status)}</span>
             <div>
               <span className="font-bold text-lg">BIMI</span>
@@ -158,7 +158,7 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             </div>
           </div>
           {result.bimi.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium">
+            <div className="flex items-center gap-2 text-xs font-medium mt-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -168,8 +168,8 @@ export function PreviewResults({ result }: PreviewResultsProps) {
         </div>
 
         {/* MTA-STS */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm ${getStatusColor(result.mtaSts.status)}`}>
-          <div className="flex items-center gap-3 mb-3">
+        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.mtaSts.status)}`}>
+          <div className="flex items-center gap-3">
             <span className="text-2xl">{getStatusIcon(result.mtaSts.status)}</span>
             <div>
               <span className="font-bold text-lg">MTA-STS</span>
@@ -177,7 +177,7 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             </div>
           </div>
           {result.mtaSts.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium">
+            <div className="flex items-center gap-2 text-xs font-medium mt-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>

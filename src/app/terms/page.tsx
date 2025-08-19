@@ -17,7 +17,7 @@ export default function TermsOfService() {
               Terms of <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Service</span>
             </h1>
             <p className="text-gray-300 text-lg">
-              Last updated: December 2024
+              Last updated: January 2025
             </p>
           </div>
 

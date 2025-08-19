@@ -67,19 +67,52 @@ export default function Home() {
             {/* Main Headline */}
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
               <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
-                Stop Email
+                Stop Your Emails Going to
               </span>
               <br />
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Delivery Issues
+              <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
+                SPAM & JUNK
               </span>
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-4 leading-relaxed">
-              Get instant analysis of your domain&apos;s email authentication. Fix SPF, DKIM, DMARC, BIMI, and MTA-STS issues with 
-              <span className="text-blue-400 font-semibold"> copy-paste DNS records</span>.
-            </p>
+            {/* Pain Points */}
+            <div className="bg-red-900/20 border border-red-500/30 rounded-2xl p-6 max-w-4xl mx-auto mb-8">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <span className="text-2xl">⚠️</span>
+                <h3 className="text-xl font-bold text-red-300">Is This Happening to Your Business?</h3>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4 text-red-200">
+                <div className="flex items-center gap-2">
+                  <span className="text-red-400">✗</span>
+                  <span>Important emails ending up in spam folders</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-red-400">✗</span>
+                  <span>Customers not receiving your invoices or updates</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-red-400">✗</span>
+                  <span>Marketing emails blocked by major providers</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-red-400">✗</span>
+                  <span>Lost sales due to poor email deliverability</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Solution */}
+            <div className="bg-gradient-to-r from-green-900/20 via-blue-900/20 to-purple-900/20 border border-green-500/30 rounded-2xl p-6 max-w-4xl mx-auto mb-8">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <span className="text-2xl">🛡️</span>
+                <h3 className="text-xl font-bold text-green-300">Fix Your Email Authentication in Minutes</h3>
+              </div>
+              <p className="text-gray-300 text-center text-lg leading-relaxed">
+                Get instant analysis of your domain's SPF, DKIM, DMARC, BIMI, and MTA-STS records.
+                <br />
+                <span className="text-blue-400 font-semibold">Copy-paste DNS fixes</span> that work with all major email providers.
+              </p>
+            </div>
 
             {/* Social Proof */}
             <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-400 mb-12">
@@ -105,11 +138,13 @@ export default function Home() {
           </div>
 
           {/* Domain Input Section */}
-          <DomainInput 
-            onSubmit={handleDomainCheck} 
-            isLoading={isLoading}
-            error={error}
-          />
+          <div id="scan" className="scroll-mt-20">
+            <DomainInput 
+              onSubmit={handleDomainCheck} 
+              isLoading={isLoading}
+              error={error}
+            />
+          </div>
 
           {/* Results */}
           {checkResult && (
@@ -133,46 +168,110 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Feature 1 */}
+            {/* Feature 1 - Pain Point */}
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+              <div className="relative bg-gray-800/80 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-red-500/50 transition-all duration-300 h-80 flex flex-col">
+                <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                  📧
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">The Problem</h3>
+                <div className="text-gray-300 leading-relaxed space-y-2 flex-1">
+                  <p className="text-red-300 font-semibold mb-3">Your emails are failing because:</p>
+                  <p className="text-sm">• No SPF record = high spam score</p>
+                  <p className="text-sm">• Missing DKIM = deliverability issues</p>
+                  <p className="text-sm">• No DMARC = phishing vulnerability</p>
+                  <p className="text-sm">• Poor authentication = lost revenue</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature 2 - Solution */}
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-              <div className="relative bg-gray-800/80 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300">
+              <div className="relative bg-gray-800/80 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300 h-80 flex flex-col">
                 <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
                   ⚡
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4">Instant Analysis</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Get comprehensive results in under 10 seconds. No waiting, no complex setup, no technical expertise required.
-                </p>
+                <h3 className="text-xl font-bold text-white mb-4">The Solution</h3>
+                <div className="text-gray-300 leading-relaxed space-y-2 flex-1">
+                  <p className="text-blue-300 font-semibold mb-3">We provide instant fixes:</p>
+                  <p className="text-sm">• 10-second complete analysis</p>
+                  <p className="text-sm">• Copy-paste DNS records</p>
+                  <p className="text-sm">• Works with all providers</p>
+                  <p className="text-sm">• Professional PDF reports</p>
+                </div>
               </div>
             </div>
 
-            {/* Feature 2 */}
+            {/* Feature 3 - Result */}
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-              <div className="relative bg-gray-800/80 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-green-500/50 transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
-                  📋
+              <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+              <div className="relative bg-gray-800/80 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-green-500/50 transition-all duration-300 h-80 flex flex-col">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                  📈
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4">Copy-Paste Fixes</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Get exact DNS records ready to copy and paste. Works with all major DNS providers including Cloudflare, GoDaddy, and Namecheap.
-                </p>
+                <h3 className="text-xl font-bold text-white mb-4">The Results</h3>
+                <div className="text-gray-300 leading-relaxed space-y-2 flex-1">
+                  <p className="text-green-300 font-semibold mb-3">What you'll achieve:</p>
+                  <p className="text-sm">• 95%+ inbox delivery rate</p>
+                  <p className="text-sm">• Zero emails in spam folders</p>
+                  <p className="text-sm">• Enhanced brand credibility</p>
+                  <p className="text-sm">• Increased email ROI</p>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Feature 3 */}
-            <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-              <div className="relative bg-gray-800/80 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-purple-500/50 transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
-                  📊
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">Professional Reports</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Branded PDF reports with shareable links. Perfect for teams, IT consultants, or keeping records for compliance.
-                </p>
-              </div>
+      {/* Pain Points Section */}
+      <section className="py-20 bg-gray-950/50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              <span className="text-red-400">Don't Let Email Issues</span><br />
+              <span className="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">Kill Your Business</span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-4xl mx-auto mb-12">
+              Every day your emails go to spam, you're losing money. Here's what poor email authentication costs you:
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
+            <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-6 text-center h-48 flex flex-col justify-center">
+              <div className="text-4xl mb-4">💸</div>
+              <h3 className="text-lg font-bold text-red-300 mb-2">Lost Sales</h3>
+              <p className="text-sm text-red-200">Customers never see your invoices, order confirmations, or promotional emails</p>
+            </div>
+            <div className="bg-orange-900/20 border border-orange-500/30 rounded-xl p-6 text-center h-48 flex flex-col justify-center">
+              <div className="text-4xl mb-4">📉</div>
+              <h3 className="text-lg font-bold text-orange-300 mb-2">Brand Damage</h3>
+              <p className="text-sm text-orange-200">Poor deliverability makes you look unprofessional and unreliable</p>
+            </div>
+            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-6 text-center h-48 flex flex-col justify-center">
+              <div className="text-4xl mb-4">🎯</div>
+              <h3 className="text-lg font-bold text-yellow-300 mb-2">Phishing Risk</h3>
+              <p className="text-sm text-yellow-200">Without DMARC, scammers can impersonate your domain and hurt your reputation</p>
+            </div>
+            <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-6 text-center h-48 flex flex-col justify-center">
+              <div className="text-4xl mb-4">⏰</div>
+              <h3 className="text-lg font-bold text-purple-300 mb-2">Wasted Time</h3>
+              <p className="text-sm text-purple-200">Hours spent troubleshooting email issues instead of growing your business</p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <div className="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-500/40 rounded-2xl p-8 max-w-3xl mx-auto">
+              <h3 className="text-2xl font-bold text-white mb-4">
+                <span className="text-green-400">✓</span> Fix All These Issues in Under 10 Minutes
+              </h3>
+              <p className="text-gray-300 text-lg mb-6">
+                Don't let another day go by with broken email authentication. 
+                Get your professional analysis and copy-paste DNS fixes right now.
+              </p>
+              <div className="text-3xl font-bold text-green-400 mb-2">Only $12</div>
+              <div className="text-sm text-gray-400">One-time payment • Instant results • Money-back guarantee</div>
             </div>
           </div>
         </div>
@@ -186,7 +285,7 @@ export default function Home() {
               How It <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Works</span>
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Three simple steps to better email deliverability
+              Three simple steps to perfect email deliverability
             </p>
           </div>
 
@@ -201,9 +300,9 @@ export default function Home() {
                   <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-6 relative z-10">
                     1
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">Enter Domain</h3>
+                  <h3 className="text-xl font-bold text-white mb-4">Enter Your Domain</h3>
                   <p className="text-gray-300">
-                    Simply enter your domain name and click scan. Our system instantly analyzes all email authentication records.
+                    Type your domain and get instant analysis of SPF, DKIM, DMARC, BIMI, and MTA-STS records in under 10 seconds.
                   </p>
                 </div>
 
@@ -212,9 +311,9 @@ export default function Home() {
                   <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-6 relative z-10">
                     2
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">Get Report</h3>
+                  <h3 className="text-xl font-bold text-white mb-4">Get Your Fixes</h3>
                   <p className="text-gray-300">
-                    Receive a comprehensive analysis with exact DNS records, explanations, and step-by-step fixing instructions.
+                    Receive exact DNS records to copy-paste, detailed explanations, and step-by-step instructions for your DNS provider.
                   </p>
                 </div>
 
@@ -223,9 +322,9 @@ export default function Home() {
                   <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-6 relative z-10">
                     3
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">Copy & Paste</h3>
+                  <h3 className="text-xl font-bold text-white mb-4">Watch Results</h3>
                   <p className="text-gray-300">
-                    Copy the provided DNS records and paste them into your DNS provider. Watch your email deliverability improve!
+                    Paste the DNS records into your provider and see immediate improvements in email deliverability and inbox placement.
                   </p>
                 </div>
               </div>
