@@ -92,96 +92,96 @@ export function PreviewResults({ result }: PreviewResultsProps) {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {/* SPF */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.spf.status)}`}>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{getStatusIcon(result.spf.status)}</span>
-            <div>
-              <span className="font-bold text-lg">SPF</span>
-              <p className="text-sm opacity-80">Sender Policy Framework</p>
+        <div className={`p-4 rounded-xl border backdrop-blur-sm min-h-[120px] flex flex-col overflow-hidden ${getStatusColor(result.spf.status)}`}>
+          <div className="flex items-start gap-3 mb-3">
+            <span className="text-2xl flex-shrink-0">{getStatusIcon(result.spf.status)}</span>
+            <div className="min-w-0 flex-1">
+              <span className="font-bold text-lg block">SPF</span>
+              <p className="text-sm opacity-80 leading-tight">Sender Policy Framework</p>
             </div>
           </div>
           {result.spf.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium mt-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2 text-xs font-medium mt-auto">
+              <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>{result.spf.issues.length} issue{result.spf.issues.length > 1 ? 's' : ''} found</span>
+              <span className="truncate">{result.spf.issues.length} issue{result.spf.issues.length > 1 ? 's' : ''} found</span>
             </div>
           )}
         </div>
 
         {/* DMARC */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.dmarc.status)}`}>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{getStatusIcon(result.dmarc.status)}</span>
-            <div>
-              <span className="font-bold text-lg">DMARC</span>
-              <p className="text-sm opacity-80">Domain Authentication</p>
+        <div className={`p-4 rounded-xl border backdrop-blur-sm min-h-[120px] flex flex-col overflow-hidden ${getStatusColor(result.dmarc.status)}`}>
+          <div className="flex items-start gap-3 mb-3">
+            <span className="text-2xl flex-shrink-0">{getStatusIcon(result.dmarc.status)}</span>
+            <div className="min-w-0 flex-1">
+              <span className="font-bold text-lg block">DMARC</span>
+              <p className="text-sm opacity-80 leading-tight">Domain Authentication</p>
             </div>
           </div>
           {result.dmarc.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium mt-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2 text-xs font-medium mt-auto">
+              <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>{result.dmarc.issues.length} issue{result.dmarc.issues.length > 1 ? 's' : ''} found</span>
+              <span className="truncate">{result.dmarc.issues.length} issue{result.dmarc.issues.length > 1 ? 's' : ''} found</span>
             </div>
           )}
         </div>
 
         {/* DKIM */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.dkim.status)}`}>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{getStatusIcon(result.dkim.status)}</span>
-            <div>
-              <span className="font-bold text-lg">DKIM</span>
-              <p className="text-sm opacity-80">Email Signing</p>
+        <div className={`p-4 rounded-xl border backdrop-blur-sm min-h-[120px] flex flex-col overflow-hidden ${getStatusColor(result.dkim.status)}`}>
+          <div className="flex items-start gap-3 mb-3">
+            <span className="text-2xl flex-shrink-0">{getStatusIcon(result.dkim.status)}</span>
+            <div className="min-w-0 flex-1">
+              <span className="font-bold text-lg block">DKIM</span>
+              <p className="text-sm opacity-80 leading-tight">Email Signing</p>
             </div>
           </div>
           {result.dkim.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium mt-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2 text-xs font-medium mt-auto">
+              <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>{result.dkim.issues.length} issue{result.dkim.issues.length > 1 ? 's' : ''} found</span>
+              <span className="truncate">{result.dkim.issues.length} issue{result.dkim.issues.length > 1 ? 's' : ''} found</span>
             </div>
           )}
         </div>
 
         {/* BIMI */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.bimi.status)}`}>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{getStatusIcon(result.bimi.status)}</span>
-            <div>
-              <span className="font-bold text-lg">BIMI</span>
-              <p className="text-sm opacity-80">Brand Indicators</p>
+        <div className={`p-4 rounded-xl border backdrop-blur-sm min-h-[120px] flex flex-col overflow-hidden ${getStatusColor(result.bimi.status)}`}>
+          <div className="flex items-start gap-3 mb-3">
+            <span className="text-2xl flex-shrink-0">{getStatusIcon(result.bimi.status)}</span>
+            <div className="min-w-0 flex-1">
+              <span className="font-bold text-lg block">BIMI</span>
+              <p className="text-sm opacity-80 leading-tight">Brand Indicators</p>
             </div>
           </div>
           {result.bimi.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium mt-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2 text-xs font-medium mt-auto">
+              <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>{result.bimi.issues.length} issue{result.bimi.issues.length > 1 ? 's' : ''} found</span>
+              <span className="truncate">{result.bimi.issues.length} issue{result.bimi.issues.length > 1 ? 's' : ''} found</span>
             </div>
           )}
         </div>
 
         {/* MTA-STS */}
-        <div className={`p-6 rounded-xl border backdrop-blur-sm h-32 flex flex-col justify-between ${getStatusColor(result.mtaSts.status)}`}>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{getStatusIcon(result.mtaSts.status)}</span>
-            <div>
-              <span className="font-bold text-lg">MTA-STS</span>
-              <p className="text-sm opacity-80">Transport Security</p>
+        <div className={`p-4 rounded-xl border backdrop-blur-sm min-h-[120px] flex flex-col overflow-hidden ${getStatusColor(result.mtaSts.status)}`}>
+          <div className="flex items-start gap-3 mb-3">
+            <span className="text-2xl flex-shrink-0">{getStatusIcon(result.mtaSts.status)}</span>
+            <div className="min-w-0 flex-1">
+              <span className="font-bold text-lg block">MTA-STS</span>
+              <p className="text-sm opacity-80 leading-tight">Transport Security</p>
             </div>
           </div>
           {result.mtaSts.issues.length > 0 && (
-            <div className="flex items-center gap-2 text-xs font-medium mt-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2 text-xs font-medium mt-auto">
+              <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>{result.mtaSts.issues.length} issue{result.mtaSts.issues.length > 1 ? 's' : ''} found</span>
+              <span className="truncate">{result.mtaSts.issues.length} issue{result.mtaSts.issues.length > 1 ? 's' : ''} found</span>
             </div>
           )}
         </div>
