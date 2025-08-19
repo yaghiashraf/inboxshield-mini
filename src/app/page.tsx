@@ -107,11 +107,17 @@ export default function Home() {
                 <span className="text-2xl">🛡️</span>
                 <h3 className="text-xl font-bold text-green-300">Fix Your Email Authentication in Minutes</h3>
               </div>
-              <p className="text-gray-300 text-center text-lg leading-relaxed">
-                Get instant analysis of your domain's SPF, DKIM, DMARC, BIMI, and MTA-STS records.
-                <br />
-                <span className="text-blue-400 font-semibold">Copy-paste DNS fixes</span> that work with all major email providers.
-              </p>
+              <div className="text-gray-300 text-center text-lg leading-relaxed space-y-3">
+                <p>Get instant analysis of your domain's email authentication:</p>
+                <div className="flex flex-wrap justify-center gap-2 text-sm">
+                  <span className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full border border-blue-500/30">SPF</span>
+                  <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full border border-purple-500/30">DKIM</span>
+                  <span className="bg-green-500/20 text-green-300 px-3 py-1 rounded-full border border-green-500/30">DMARC</span>
+                  <span className="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full border border-yellow-500/30">BIMI</span>
+                  <span className="bg-pink-500/20 text-pink-300 px-3 py-1 rounded-full border border-pink-500/30">MTA-STS</span>
+                </div>
+                <p><span className="text-blue-400 font-semibold">Copy-paste DNS fixes</span> that work with all major email providers.</p>
+              </div>
             </div>
 
             {/* Social Proof */}
