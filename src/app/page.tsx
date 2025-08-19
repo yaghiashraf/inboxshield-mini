@@ -7,32 +7,63 @@ import { DomainInput } from '@/components/DomainInput';
 import { PreviewResults } from '@/components/PreviewResults';
 import { DomainCheckResult } from '@/types';
 
+// Client-side cache for domain results
+const domainCache = new Map<string, { result: DomainCheckResult; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 export default function Home() {
   const [checkResult, setCheckResult] = useState<DomainCheckResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleDomainCheck = async (domain: string) => {
+    const normalizedDomain = domain.toLowerCase().trim();
+    
+    // Check client-side cache first
+    const cached = domainCache.get(normalizedDomain);
+    if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+      setCheckResult(cached.result);
+      setError(null);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     
     try {
-      const response = await fetch('/api/check-preview', {
+      const response = await fetch('/.netlify/functions/check-preview', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ domain, isPreview: true }),
+        body: JSON.stringify({ domain: normalizedDomain, isPreview: true }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to check domain');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error: ${response.status}`);
       }
 
       const result = await response.json();
+      
+      // Cache the result
+      domainCache.set(normalizedDomain, { result, timestamp: Date.now() });
+      
+      // Clean old cache entries occasionally
+      if (Math.random() < 0.1) {
+        const now = Date.now();
+        for (const [key, value] of domainCache.entries()) {
+          if (now - value.timestamp > CACHE_DURATION) {
+            domainCache.delete(key);
+          }
+        }
+      }
+      
       setCheckResult(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred while analyzing your domain';
+      setError(errorMessage);
+      console.error('Domain check error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -143,21 +174,26 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Domain Input Section */}
+          {/* Domain Input and Results Section */}
           <div id="scan" className="scroll-mt-20">
-            <DomainInput 
-              onSubmit={handleDomainCheck} 
-              isLoading={isLoading}
-              error={error}
-            />
-          </div>
+            <div className={`grid gap-8 max-w-7xl mx-auto ${checkResult ? 'lg:grid-cols-2' : 'max-w-2xl'}`}>
+              {/* Domain Input */}
+              <div className="w-full">
+                <DomainInput 
+                  onSubmit={handleDomainCheck} 
+                  isLoading={isLoading}
+                  error={error}
+                />
+              </div>
 
-          {/* Results */}
-          {checkResult && (
-            <div className="mt-16 max-w-6xl mx-auto">
-              <PreviewResults result={checkResult} />
+              {/* Results - appears next to input on larger screens */}
+              {checkResult && (
+                <div className="w-full">
+                  <PreviewResults result={checkResult} />
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </section>
 

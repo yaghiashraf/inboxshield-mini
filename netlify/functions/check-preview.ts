@@ -9,6 +9,10 @@ import {
   checkMTASTS 
 } from '../../src/lib/checkers';
 
+// Simple in-memory cache for preview requests
+const cache = new Map<string, { data: DomainCheckResult; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+
 export const handler: Handler = async (event, context) => {
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
@@ -49,13 +53,40 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
+    const normalizedDomain = domain.toLowerCase().trim();
+    const cacheKey = `preview_${normalizedDomain}`;
+
+    // Check cache first
+    const cached = cache.get(cacheKey);
+    if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+          'Cache-Control': 'public, max-age=300', // 5 minutes client-side cache
+        },
+        body: JSON.stringify({ ...cached.data, fromCache: true }),
+      };
+    }
+
+    // Clean old cache entries periodically
+    if (Math.random() < 0.1) { // 10% chance
+      const now = Date.now();
+      for (const [key, value] of cache.entries()) {
+        if (now - value.timestamp > CACHE_DURATION) {
+          cache.delete(key);
+        }
+      }
+    }
+
     // Run all checks concurrently
     const [spfResult, dmarcResult, dkimResult, bimiResult, mtaStsResult] = await Promise.all([
-      checkSPF(domain, isPreview),
-      checkDMARC(domain, isPreview),
-      checkDKIM(domain, isPreview),
-      checkBIMI(domain, isPreview),
-      checkMTASTS(domain, isPreview),
+      checkSPF(normalizedDomain, isPreview),
+      checkDMARC(normalizedDomain, isPreview),
+      checkDKIM(normalizedDomain, isPreview),
+      checkBIMI(normalizedDomain, isPreview),
+      checkMTASTS(normalizedDomain, isPreview),
     ]);
 
     // Calculate overall score
@@ -75,7 +106,7 @@ export const handler: Handler = async (event, context) => {
       getStatusScore(mtaStsResult.status);
 
     const result: DomainCheckResult = {
-      domain: domain.toLowerCase(),
+      domain: normalizedDomain,
       timestamp: new Date().toISOString(),
       spf: spfResult,
       dmarc: dmarcResult,
@@ -86,12 +117,15 @@ export const handler: Handler = async (event, context) => {
       isPreview,
     };
 
+    // Cache the result
+    cache.set(cacheKey, { data: result, timestamp: Date.now() });
+
     return {
       statusCode: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Cache-Control': 'public, max-age=300', // 5 minutes client-side cache
       },
       body: JSON.stringify(result),
     };

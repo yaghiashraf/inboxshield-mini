@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Domain Analysis Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .pass { background-color: #d4edda; border-color: #c3e6cb; }
+        .fail { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>InboxShield Mini - Domain Analysis Test</h1>
+    
+    <div class="test">
+        <h3>Test 1: Consistency Check</h3>
+        <p>Tests that the same domain returns identical results on multiple calls</p>
+        <button onclick="testConsistency()">Run Consistency Test</button>
+        <div id="consistencyResult" class="result"></div>
+    </div>
+    
+    <div class="test">
+        <h3>Test 2: Caching Check</h3>
+        <p>Tests that cached results are returned quickly</p>
+        <button onclick="testCaching()">Run Caching Test</button>
+        <div id="cachingResult" class="result"></div>
+    </div>
+    
+    <div class="test">
+        <h3>Test 3: Different Domain Results</h3>
+        <p>Tests that different domains return different results</p>
+        <button onclick="testDifferentDomains()">Run Domain Variation Test</button>
+        <div id="domainsResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_URL = '/.netlify/functions/check-preview';
+        
+        async function checkDomain(domain) {
+            const start = Date.now();
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ domain, isPreview: true })
+            });
+            const result = await response.json();
+            const duration = Date.now() - start;
+            return { result, duration };
+        }
+        
+        async function testConsistency() {
+            const resultDiv = document.getElementById('consistencyResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const domain = 'example.com';
+                const test1 = await checkDomain(domain);
+                const test2 = await checkDomain(domain);
+                const test3 = await checkDomain(domain);
+                
+                // Compare key properties
+                const consistent = (
+                    test1.result.overallScore === test2.result.overallScore &&
+                    test2.result.overallScore === test3.result.overallScore &&
+                    test1.result.spf.status === test2.result.spf.status &&
+                    test2.result.spf.status === test3.result.spf.status &&
+                    test1.result.dmarc.status === test2.result.dmarc.status &&
+                    test2.result.dmarc.status === test3.result.dmarc.status
+                );
+                
+                if (consistent) {
+                    resultDiv.innerHTML = `<div class="pass">✓ PASS: All three requests returned identical results<br>
+                    Score: ${test1.result.overallScore}/100<br>
+                    SPF: ${test1.result.spf.status}, DMARC: ${test1.result.dmarc.status}</div>`;
+                    resultDiv.className = 'result pass';
+                } else {
+                    resultDiv.innerHTML = `<div class="fail">✗ FAIL: Results were inconsistent<br>
+                    Test 1: ${test1.result.overallScore}/100<br>
+                    Test 2: ${test2.result.overallScore}/100<br>
+                    Test 3: ${test3.result.overallScore}/100</div>`;
+                    resultDiv.className = 'result fail';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="fail">✗ ERROR: ${error.message}</div>`;
+                resultDiv.className = 'result fail';
+            }
+        }
+        
+        async function testCaching() {
+            const resultDiv = document.getElementById('cachingResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const domain = 'test-caching.com';
+                
+                // First request (should be slow)
+                const first = await checkDomain(domain);
+                
+                // Second request (should be fast due to caching)
+                const second = await checkDomain(domain);
+                
+                const speedImprovement = first.duration > second.duration;
+                const fromCache = second.result.fromCache === true;
+                
+                if (speedImprovement || fromCache) {
+                    resultDiv.innerHTML = `<div class="pass">✓ PASS: Caching is working<br>
+                    First request: ${first.duration}ms<br>
+                    Second request: ${second.duration}ms<br>
+                    From cache: ${fromCache ? 'Yes' : 'No'}</div>`;
+                    resultDiv.className = 'result pass';
+                } else {
+                    resultDiv.innerHTML = `<div class="fail">⚠ WARNING: Caching might not be optimal<br>
+                    First: ${first.duration}ms, Second: ${second.duration}ms</div>`;
+                    resultDiv.className = 'result fail';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="fail">✗ ERROR: ${error.message}</div>`;
+                resultDiv.className = 'result fail';
+            }
+        }
+        
+        async function testDifferentDomains() {
+            const resultDiv = document.getElementById('domainsResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const domains = ['google.com', 'example.com', 'testdomain.com'];
+                const results = [];
+                
+                for (const domain of domains) {
+                    const test = await checkDomain(domain);
+                    results.push({ domain, result: test.result });
+                }
+                
+                // Check that different domains have different characteristics
+                const scores = results.map(r => r.result.overallScore);
+                const allSame = scores.every(score => score === scores[0]);
+                
+                if (!allSame) {
+                    resultDiv.innerHTML = `<div class="pass">✓ PASS: Different domains return different results<br>
+                    ${results.map(r => `${r.domain}: ${r.result.overallScore}/100`).join('<br>')}</div>`;
+                    resultDiv.className = 'result pass';
+                } else {
+                    resultDiv.innerHTML = `<div class="fail">⚠ WARNING: All domains returned identical scores<br>
+                    This might indicate the simulation is too simple</div>`;
+                    resultDiv.className = 'result fail';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="fail">✗ ERROR: ${error.message}</div>`;
+                resultDiv.className = 'result fail';
+            }
+        }
+    </script>
+</body>
+</html>
