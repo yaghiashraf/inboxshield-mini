@@ -155,40 +155,48 @@ export function ProviderLogos({ className = '' }: ProviderLogosProps) {
   ];
 
   return (
-    <div className={`w-full overflow-hidden ${className}`}>
-      <div className="relative">
-        {/* Gradient masks for smooth fade effect */}
-        <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-gray-900 to-transparent z-10 pointer-events-none"></div>
-        <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-gray-900 to-transparent z-10 pointer-events-none"></div>
+    <div className={`provider-marquee w-full overflow-hidden ${className}`}>
+      <div className="relative h-20 flex items-center">
+        {/* Enhanced gradient masks for smoother fade effect */}
+        <div className="absolute left-0 top-0 w-32 h-full bg-gradient-to-r from-gray-900 via-gray-900/80 to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute right-0 top-0 w-32 h-full bg-gradient-to-l from-gray-900 via-gray-900/80 to-transparent z-10 pointer-events-none"></div>
         
-        {/* Scrolling container */}
-        <div className="flex animate-scroll-left">
+        {/* Continuous scrolling marquee */}
+        <div className="marquee-track flex items-center animate-marquee">
           {/* First set of logos */}
-          <div className="flex items-center space-x-6 px-4">
+          <div className="marquee-content flex items-center">
             {providers.map((provider, index) => (
               <div
                 key={`first-${index}`}
-                className="flex-shrink-0 flex items-center justify-center space-x-3 h-14 px-5 bg-gray-800/40 rounded-xl border border-gray-700/50 backdrop-blur-sm hover:bg-gray-700/50 transition-all duration-300"
+                className="flex-shrink-0 flex items-center justify-center mx-8 group cursor-pointer"
               >
-                {provider.logo}
-                <span className="text-gray-300 font-medium text-sm whitespace-nowrap">
-                  {provider.name}
-                </span>
+                <div className="flex items-center space-x-3 px-6 py-3 rounded-lg transition-all duration-300 hover:bg-gray-800/30">
+                  <div className="provider-logo opacity-70 group-hover:opacity-100 transition-opacity duration-300 grayscale group-hover:grayscale-0">
+                    {provider.logo}
+                  </div>
+                  <span className="text-gray-400 group-hover:text-gray-200 font-medium text-sm whitespace-nowrap transition-colors duration-300">
+                    {provider.name}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
           
-          {/* Duplicate set for seamless loop */}
-          <div className="flex items-center space-x-6 px-4">
+          {/* Seamless duplicate set */}
+          <div className="marquee-content flex items-center">
             {providers.map((provider, index) => (
               <div
                 key={`second-${index}`}
-                className="flex-shrink-0 flex items-center justify-center space-x-3 h-14 px-5 bg-gray-800/40 rounded-xl border border-gray-700/50 backdrop-blur-sm hover:bg-gray-700/50 transition-all duration-300"
+                className="flex-shrink-0 flex items-center justify-center mx-8 group cursor-pointer"
               >
-                {provider.logo}
-                <span className="text-gray-300 font-medium text-sm whitespace-nowrap">
-                  {provider.name}
-                </span>
+                <div className="flex items-center space-x-3 px-6 py-3 rounded-lg transition-all duration-300 hover:bg-gray-800/30">
+                  <div className="provider-logo opacity-70 group-hover:opacity-100 transition-opacity duration-300 grayscale group-hover:grayscale-0">
+                    {provider.logo}
+                  </div>
+                  <span className="text-gray-400 group-hover:text-gray-200 font-medium text-sm whitespace-nowrap transition-colors duration-300">
+                    {provider.name}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

@@ -25,8 +25,8 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Provider logos scrolling animation */
-@keyframes scroll-left {
+/* Netlify-style marquee animation */
+@keyframes marquee {
   0% {
     transform: translateX(0);
   }
@@ -35,10 +35,48 @@ body {
   }
 }
 
-.animate-scroll-left {
-  animation: scroll-left 25s linear infinite;
+.animate-marquee {
+  animation: marquee 60s linear infinite;
+  will-change: transform;
 }
 
-.animate-scroll-left:hover {
+.animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* Provider marquee specific styles */
+.provider-marquee {
+  --marquee-gap: 2rem;
+  --marquee-speed: 60s;
+}
+
+.marquee-track {
+  width: max-content;
+  gap: var(--marquee-gap);
+}
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: var(--marquee-gap);
+  min-width: max-content;
+}
+
+.provider-logo {
+  filter: brightness(0.8) contrast(1.2);
+  transition: all 0.3s ease;
+}
+
+.provider-logo:hover {
+  filter: brightness(1) contrast(1);
+}
+
+/* Smooth scrolling performance optimization */
+.provider-marquee * {
+  will-change: transform;
+}
+
+/* Additional visual enhancements */
+.provider-marquee .group:hover {
+  transform: translateY(-1px);
 }
