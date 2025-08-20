@@ -52,7 +52,7 @@ export function Footer() {
               <li><a href="#features" className="text-gray-400 hover:text-white transition-colors text-sm">Features</a></li>
               <li><a href="#pricing" className="text-gray-400 hover:text-white transition-colors text-sm">Pricing</a></li>
               <li><a href="#how-it-works" className="text-gray-400 hover:text-white transition-colors text-sm">How It Works</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">API Documentation</a></li>
+              <li><Link href="/stripe-test" className="text-gray-400 hover:text-blue-400 transition-colors text-sm">🧪 Test Payment</Link></li>
             </ul>
           </div>
 

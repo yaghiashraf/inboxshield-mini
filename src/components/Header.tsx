@@ -41,7 +41,13 @@ export function Header() {
 
           {/* CTA Button */}
           <div className="flex items-center space-x-4">
-            <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-blue-500/25">
+            <button 
+              onClick={() => {
+                const element = document.getElementById('scan');
+                element?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-blue-500/25"
+            >
               Get Started
             </button>
           </div>

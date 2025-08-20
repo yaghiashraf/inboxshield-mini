@@ -320,7 +320,7 @@ export default function Home() {
                 Get your professional analysis and copy-paste DNS fixes right now.
               </p>
               <div className="text-3xl font-bold text-green-400 mb-2">Only $11.99</div>
-              <div className="text-sm text-gray-400">One-time payment • Instant results • Money-back guarantee</div>
+              <div className="text-sm text-gray-400">One-time payment • Instant results • Professional analysis</div>
             </div>
           </div>
         </div>

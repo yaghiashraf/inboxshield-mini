@@ -384,11 +384,11 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             <div className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-500/30 rounded-lg p-4">
               <h4 className="text-yellow-400 font-bold mb-2 flex items-center gap-2">
                 <span>⚡</span>
-                Bonus: 30-Day Money-Back Guarantee
+                Instant Access & Professional Support
               </h4>
               <p className="text-sm text-gray-300">
-                If you follow our instructions and don't see significant improvement in your email deliverability within 30 days, 
-                we'll refund your $11.99 - no questions asked.
+                Get immediate access to your complete email security report with copy-paste DNS fixes. 
+                Professional analysis delivered instantly to help you fix email deliverability issues.
               </p>
             </div>
           </div>
@@ -423,7 +423,7 @@ export function PreviewResults({ result }: PreviewResultsProps) {
           </button>
           
           <div className="mt-4 text-sm text-gray-400">
-            💡 <strong className="text-white">One-time payment</strong> • <strong className="text-green-400">Instant delivery</strong> • <strong className="text-blue-400">30-day money-back guarantee</strong>
+            💡 <strong className="text-white">One-time payment</strong> • <strong className="text-green-400">Instant delivery</strong> • <strong className="text-purple-400">Professional support</strong>
           </div>
         </div>
       </div>
