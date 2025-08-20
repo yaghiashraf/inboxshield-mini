@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { DomainInput } from '@/components/DomainInput';
 import { PreviewResults } from '@/components/PreviewResults';
+import { ProviderLogos } from '@/components/ProviderLogos';
 import { DomainCheckResult } from '@/types';
 
 // Client-side cache for domain results
@@ -148,6 +149,11 @@ export default function Home() {
                   <span className="bg-pink-500/20 text-pink-300 px-3 py-1 rounded-full border border-pink-500/30">MTA-STS</span>
                 </div>
                 <p><span className="text-blue-400 font-semibold">Copy-paste DNS fixes</span> that work with all major email providers.</p>
+              </div>
+              
+              {/* Scrolling provider logos */}
+              <div className="mt-6">
+                <ProviderLogos />
               </div>
             </div>
 
