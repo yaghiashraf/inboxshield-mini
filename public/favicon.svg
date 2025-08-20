@@ -1,0 +1,11 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield background -->
+  <path d="M16 2L6 8V16C6 22.5 10.5 28.5 16 30C21.5 28.5 26 22.5 26 16V8L16 2Z" fill="#3B82F6" stroke="#1E40AF" stroke-width="1"/>
+  
+  <!-- Email envelope -->
+  <rect x="10" y="12" width="12" height="8" rx="1" fill="white" stroke="#1E40AF" stroke-width="0.5"/>
+  <path d="M10 13L16 16L22 13" stroke="#1E40AF" stroke-width="0.8" fill="none"/>
+  
+  <!-- Checkmark for security -->
+  <path d="M13 18L15 20L19 16" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
