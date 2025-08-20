@@ -4,7 +4,8 @@ import {
   DKIMResult, 
   BIMIResult, 
   MTASTSResult,
-  ProviderGuidance 
+  ProviderGuidance,
+  DomainCheckResult 
 } from '@/types';
 import { 
   lookupTxtRecords, 
@@ -358,4 +359,55 @@ export async function checkMTASTS(domain: string, isPreview: boolean = false): P
     issues,
     recommendations
   };
+}
+
+// Main function to check all email authentication protocols for a domain
+export async function checkDomain(domain: string, isPreview: boolean = false): Promise<DomainCheckResult> {
+  try {
+    // Run all checks in parallel
+    const [spf, dmarc, dkim, bimi, mtaSts] = await Promise.all([
+      checkSPF(domain, isPreview),
+      checkDMARC(domain, isPreview),
+      checkDKIM(domain, isPreview),
+      checkBIMI(domain, isPreview),
+      checkMTASTS(domain, isPreview)
+    ]);
+
+    // Calculate overall security score
+    let score = 0;
+    const weights = { spf: 30, dmarc: 30, dkim: 25, bimi: 10, mtaSts: 5 };
+
+    if (spf.status === 'pass') score += weights.spf;
+    else if (spf.status === 'warn') score += weights.spf * 0.5;
+
+    if (dmarc.status === 'pass') score += weights.dmarc;
+    else if (dmarc.status === 'warn') score += weights.dmarc * 0.5;
+
+    if (dkim.status === 'pass') score += weights.dkim;
+    else if (dkim.status === 'warn') score += weights.dkim * 0.5;
+
+    if (bimi.status === 'pass') score += weights.bimi;
+    else if (bimi.status === 'warn') score += weights.bimi * 0.5;
+
+    if (mtaSts.status === 'pass') score += weights.mtaSts;
+    else if (mtaSts.status === 'warn') score += weights.mtaSts * 0.5;
+
+    const overallScore = Math.round(score);
+
+    return {
+      domain,
+      overallScore,
+      spf,
+      dmarc,
+      dkim,
+      bimi,
+      mtaSts,
+      timestamp: new Date().toISOString(),
+      isPreview
+    };
+
+  } catch (error) {
+    console.error(`Error checking domain ${domain}:`, error);
+    throw new Error(`Failed to analyze domain: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 }
