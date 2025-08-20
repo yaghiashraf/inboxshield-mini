@@ -32,6 +32,13 @@ export function PreviewResults({ result }: PreviewResultsProps) {
     setIsLoading(true);
     
     try {
+      console.log('Starting checkout process for domain:', result.domain);
+      
+      // Check if Stripe keys are configured
+      if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY.includes('REPLACE')) {
+        throw new Error('Stripe keys not configured. Please add your Stripe test keys to .env.local file.');
+      }
+
       // Create checkout session
       const response = await fetch('/.netlify/functions/create-checkout-session', {
         method: 'POST',
@@ -41,29 +48,42 @@ export function PreviewResults({ result }: PreviewResultsProps) {
         body: JSON.stringify({ domain: result.domain }),
       });
 
+      console.log('Checkout session response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Failed to create checkout session');
+        const errorData = await response.text();
+        console.error('Server response:', errorData);
+        throw new Error(`Server error (${response.status}): ${errorData}`);
       }
 
-      const { sessionId } = await response.json();
+      const responseData = await response.json();
+      console.log('Checkout session data:', responseData);
+
+      if (!responseData.sessionId) {
+        throw new Error('No session ID received from server');
+      }
+
       const stripe = await stripePromise;
 
       if (!stripe) {
-        throw new Error('Stripe failed to load');
+        throw new Error('Stripe failed to load - check your publishable key');
       }
 
+      console.log('Redirecting to Stripe checkout...');
+      
       // Redirect to Stripe checkout
       const { error } = await stripe.redirectToCheckout({
-        sessionId,
+        sessionId: responseData.sessionId,
       });
 
       if (error) {
         console.error('Stripe checkout error:', error);
-        alert('Sorry, there was an error redirecting to checkout. Please try again.');
+        alert(`Stripe checkout error: ${error.message}`);
       }
     } catch (error) {
       console.error('Error initiating payment:', error);
-      alert('Sorry, there was an error processing your payment. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Payment Error: ${errorMessage}\n\nCheck the browser console for more details.`);
     } finally {
       setIsLoading(false);
     }

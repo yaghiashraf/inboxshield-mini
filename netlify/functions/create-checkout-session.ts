@@ -32,7 +32,26 @@ export const handler: Handler = async (event, context) => {
   }
 
   try {
+    console.log('Creating checkout session...');
+    
+    // Check if Stripe secret key is configured
+    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY.includes('REPLACE')) {
+      console.error('Stripe secret key not configured');
+      return {
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          error: 'Payment system not configured. Please contact support.',
+          details: 'Stripe secret key missing'
+        }),
+      };
+    }
+
     const { domain } = JSON.parse(event.body || '{}');
+    console.log('Processing checkout for domain:', domain);
 
     if (!domain || !validateDomainFormat(domain)) {
       return {

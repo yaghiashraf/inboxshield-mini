@@ -60,10 +60,10 @@ export function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">Support</h3>
             <ul className="space-y-3">
+              <li><Link href="/setup" className="text-gray-400 hover:text-blue-400 transition-colors text-sm">⚙️ Setup Guide</Link></li>
               <li><a href="mailto:support@inboxshield.com" className="text-gray-400 hover:text-white transition-colors text-sm">Help Center</a></li>
               <li><a href="mailto:support@inboxshield.com" className="text-gray-400 hover:text-white transition-colors text-sm">Contact Us</a></li>
               <li><a href="https://status.inboxshield.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm">Status</a></li>
-              <li><a href="mailto:community@inboxshield.com" className="text-gray-400 hover:text-white transition-colors text-sm">Community</a></li>
             </ul>
           </div>
 
