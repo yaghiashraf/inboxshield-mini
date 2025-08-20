@@ -313,7 +313,7 @@ export default function Home() {
                 Don't let another day go by with broken email authentication. 
                 Get your professional analysis and copy-paste DNS fixes right now.
               </p>
-              <div className="text-3xl font-bold text-green-400 mb-2">Only $12</div>
+              <div className="text-3xl font-bold text-green-400 mb-2">Only $11.99</div>
               <div className="text-sm text-gray-400">One-time payment • Instant results • Money-back guarantee</div>
             </div>
           </div>
@@ -394,7 +394,7 @@ export default function Home() {
               <div className="relative bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-3xl p-8 text-center">
                 <div className="mb-6">
                   <div className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                    $12
+                    $11.99
                   </div>
                   <p className="text-gray-300 text-lg">One-time payment</p>
                 </div>

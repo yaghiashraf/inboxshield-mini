@@ -158,7 +158,7 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
             <span className="text-sm text-gray-300">
               Free preview • Full report with fixes only 
             </span>
-            <span className="font-bold text-blue-400">$12</span>
+            <span className="font-bold text-blue-400">$11.99</span>
           </div>
           <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
             <div className="flex items-center gap-1">

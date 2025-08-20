@@ -45,7 +45,7 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    const priceInCents = parseInt(process.env.REPORT_PRICE_CENTS || '1200');
+    const priceInCents = parseInt(process.env.REPORT_PRICE_CENTS || '1199');
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000';
 
     // Generate a unique report ID

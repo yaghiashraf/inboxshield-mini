@@ -78,7 +78,7 @@ export default function TermsOfService() {
               <h2 className="text-2xl font-bold text-white mb-4">4. Payment Terms</h2>
               <div className="text-gray-300 space-y-4">
                 <p>
-                  <strong className="text-white">Pricing:</strong> Our service is offered as a one-time payment of $12 USD per domain analysis.
+                  <strong className="text-white">Pricing:</strong> Our service is offered as a one-time payment of $11.99 USD per domain analysis.
                 </p>
                 <p>
                   <strong className="text-white">Payment Processing:</strong> All payments are processed securely through Stripe. We do not store payment information.
@@ -160,7 +160,7 @@ export default function TermsOfService() {
                   <li>Third-party service interruptions</li>
                 </ul>
                 <p>
-                  Our total liability shall not exceed the amount you paid for the service ($12 USD).
+                  Our total liability shall not exceed the amount you paid for the service ($11.99 USD).
                 </p>
               </div>
             </section>

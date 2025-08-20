@@ -33,7 +33,7 @@ export function PreviewResults({ result }: PreviewResultsProps) {
     
     try {
       // Create checkout session
-      const response = await fetch('/api/create-checkout-session', {
+      const response = await fetch('/.netlify/functions/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,14 +90,14 @@ export function PreviewResults({ result }: PreviewResultsProps) {
         </div>
         
         {result.overallScore < 80 && (
-          <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-red-400">⚠️</span>
-              <span className="text-red-300 font-semibold">Your emails may be going to spam!</span>
+          <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-6 mb-6 text-left">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-3xl">⚠️</span>
+              <h3 className="text-xl font-bold text-red-300">Your emails are going to spam!</h3>
             </div>
-            <p className="text-red-200 text-sm">
-              Your email authentication score is {result.overallScore}/100. This means many of your emails are likely 
-              ending up in spam folders instead of the inbox.
+            <p className="text-red-200 text-base leading-relaxed">
+              Your email setup scored {result.overallScore}/100, which means most of your important business emails 
+              are likely ending up in spam folders instead of your customers' inboxes. This is costing you sales and damaging your reputation.
             </p>
           </div>
         )}
@@ -110,15 +110,15 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             <span className="text-3xl flex-shrink-0">{getStatusIcon(result.spf.status)}</span>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
-                <h3 className="text-xl font-bold">SPF (Sender Policy Framework)</h3>
+                <h3 className="text-xl font-bold">Email Sender Verification (SPF)</h3>
                 <span className="text-sm opacity-75 bg-black/20 px-2 py-1 rounded">
-                  {result.spf.status === 'pass' ? 'PASSING' : result.spf.status === 'warn' ? 'NEEDS ATTENTION' : 'FAILING'}
+                  {result.spf.status === 'pass' ? 'WORKING' : result.spf.status === 'warn' ? 'NEEDS FIXING' : 'BROKEN'}
                 </span>
               </div>
               
               <p className="text-sm opacity-90 mb-4 leading-relaxed">
-                SPF tells email servers which IP addresses are authorized to send emails from your domain. 
-                Without proper SPF, email providers like Gmail and Outlook will mark your emails as suspicious.
+                This tells Gmail, Yahoo, and other email providers that you're allowed to send emails from your domain. 
+                When it's missing or broken, your emails look suspicious and get sent to spam automatically.
               </p>
               
               {result.spf.issues.length > 0 ? (
@@ -152,15 +152,15 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             <span className="text-3xl flex-shrink-0">{getStatusIcon(result.dmarc.status)}</span>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
-                <h3 className="text-xl font-bold">DMARC (Domain-based Message Authentication)</h3>
+                <h3 className="text-xl font-bold">Email Security Policy (DMARC)</h3>
                 <span className="text-sm opacity-75 bg-black/20 px-2 py-1 rounded">
-                  {result.dmarc.status === 'pass' ? 'PASSING' : result.dmarc.status === 'warn' ? 'NEEDS ATTENTION' : 'FAILING'}
+                  {result.dmarc.status === 'pass' ? 'WORKING' : result.dmarc.status === 'warn' ? 'NEEDS FIXING' : 'BROKEN'}
                 </span>
               </div>
               
               <p className="text-sm opacity-90 mb-4 leading-relaxed">
-                DMARC protects your domain from being used in phishing attacks and tells email providers how to handle 
-                emails that fail SPF/DKIM checks. It's crucial for inbox delivery and brand protection.
+                This protects your business from scammers who try to send fake emails using your company name. 
+                It also tells email providers what to do when someone tries to impersonate you - without it, your real emails get blocked.
               </p>
               
               {result.dmarc.issues.length > 0 ? (
@@ -194,15 +194,15 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             <span className="text-3xl flex-shrink-0">{getStatusIcon(result.dkim.status)}</span>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
-                <h3 className="text-xl font-bold">DKIM (DomainKeys Identified Mail)</h3>
+                <h3 className="text-xl font-bold">Email Signature (DKIM)</h3>
                 <span className="text-sm opacity-75 bg-black/20 px-2 py-1 rounded">
-                  {result.dkim.status === 'pass' ? 'PASSING' : result.dkim.status === 'warn' ? 'NEEDS ATTENTION' : 'FAILING'}
+                  {result.dkim.status === 'pass' ? 'WORKING' : result.dkim.status === 'warn' ? 'NEEDS FIXING' : 'BROKEN'}
                 </span>
               </div>
               
               <p className="text-sm opacity-90 mb-4 leading-relaxed">
-                DKIM adds a digital signature to your emails that proves they haven't been tampered with. 
-                Major email providers require DKIM for inbox delivery.
+                This adds an invisible "signature" to your emails that proves they're really from you and haven't been tampered with. 
+                Gmail, Outlook, and other major email services require this signature to deliver your emails to the inbox.
               </p>
               
               {result.dkim.issues.length > 0 ? (
@@ -236,13 +236,13 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             <span className="text-3xl flex-shrink-0">{getStatusIcon(result.bimi.status)}</span>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
-                <h3 className="text-xl font-bold">BIMI (Brand Indicators for Message Identification)</h3>
-                <span className="text-sm opacity-75 bg-black/20 px-2 py-1 rounded">OPTIONAL</span>
+                <h3 className="text-xl font-bold">Company Logo Display (BIMI)</h3>
+                <span className="text-sm opacity-75 bg-black/20 px-2 py-1 rounded">BONUS FEATURE</span>
               </div>
               
               <p className="text-sm opacity-90 mb-4 leading-relaxed">
-                BIMI displays your company logo next to emails in supported email clients like Gmail and Yahoo. 
-                It requires strong DMARC policies and builds brand trust.
+                This shows your company logo next to your emails in Gmail and Yahoo Mail, making your emails instantly recognizable 
+                and more trustworthy to customers. It's like having your business card appear with every email.
               </p>
               
               {result.bimi.issues.length > 0 ? (
@@ -275,13 +275,13 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             <span className="text-3xl flex-shrink-0">{getStatusIcon(result.mtaSts.status)}</span>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
-                <h3 className="text-xl font-bold">MTA-STS (Mail Transfer Agent Strict Transport Security)</h3>
-                <span className="text-sm opacity-75 bg-black/20 px-2 py-1 rounded">OPTIONAL</span>
+                <h3 className="text-xl font-bold">Secure Email Delivery (MTA-STS)</h3>
+                <span className="text-sm opacity-75 bg-black/20 px-2 py-1 rounded">EXTRA SECURITY</span>
               </div>
               
               <p className="text-sm opacity-90 mb-4 leading-relaxed">
-                MTA-STS ensures emails to your domain are only sent over encrypted connections, 
-                preventing man-in-the-middle attacks during email delivery.
+                This ensures that emails sent to your business are always encrypted and secure, protecting sensitive 
+                customer information from hackers who might try to intercept them during delivery.
               </p>
               
               {result.mtaSts.issues.length > 0 ? (
@@ -326,26 +326,70 @@ export function PreviewResults({ result }: PreviewResultsProps) {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-4 mb-6 text-left">
-            <div className="bg-black/20 rounded-lg p-4">
-              <h4 className="text-green-400 font-semibold mb-2">✓ What You Get for $12:</h4>
-              <ul className="text-sm text-gray-300 space-y-1">
-                <li>• Exact DNS records to copy & paste</li>
-                <li>• Step-by-step fixing instructions</li>
-                <li>• Provider-specific setup guides</li>
-                <li>• Professional PDF report</li>
-                <li>• Shareable results link</li>
-              </ul>
+          <div className="space-y-4 mb-6">
+            <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-500/30 rounded-lg p-5">
+              <h4 className="text-green-400 font-bold text-lg mb-3 flex items-center gap-2">
+                <span>✓</span>
+                Complete Email Fix Package - Instant Delivery
+              </h4>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="text-white font-medium mb-2">📋 Detailed Analysis Report:</h5>
+                  <ul className="text-sm text-gray-300 space-y-1 pl-3">
+                    <li>• Professional PDF with full security audit</li>
+                    <li>• Shareable link for your team/consultants</li>
+                    <li>• Priority level of each issue found</li>
+                    <li>• Business impact explanation for each problem</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="text-white font-medium mb-2">🔧 Ready-to-Use Solutions:</h5>
+                  <ul className="text-sm text-gray-300 space-y-1 pl-3">
+                    <li>• Exact DNS records formatted for copy-paste</li>
+                    <li>• Step-by-step instructions with screenshots</li>
+                    <li>• Provider-specific guides (GoDaddy, Cloudflare, etc.)</li>
+                    <li>• Verification steps to confirm fixes worked</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div className="bg-black/20 rounded-lg p-4">
-              <h4 className="text-blue-400 font-semibold mb-2">🚀 Results You'll See:</h4>
-              <ul className="text-sm text-gray-300 space-y-1">
-                <li>• 95%+ emails reach the inbox</li>
-                <li>• No more spam folder issues</li>
-                <li>• Improved brand trust & credibility</li>
-                <li>• Protection from domain spoofing</li>
-                <li>• Higher email marketing ROI</li>
-              </ul>
+            
+            <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-lg p-5">
+              <h4 className="text-blue-400 font-bold text-lg mb-3 flex items-center gap-2">
+                <span>🚀</span>
+                Expected Results Within 24-48 Hours
+              </h4>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="text-white font-medium mb-2">📈 Immediate Improvements:</h5>
+                  <ul className="text-sm text-gray-300 space-y-1 pl-3">
+                    <li>• 95%+ inbox delivery rate (vs current ~{Math.max(10, result.overallScore)}%)</li>
+                    <li>• Zero important emails in spam folders</li>
+                    <li>• Enhanced sender reputation with ISPs</li>
+                    <li>• Protection against domain impersonation</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="text-white font-medium mb-2">💰 Business Impact:</h5>
+                  <ul className="text-sm text-gray-300 space-y-1 pl-3">
+                    <li>• Higher email marketing conversion rates</li>
+                    <li>• Customers actually receive invoices & updates</li>
+                    <li>• Professional brand image & trust</li>
+                    <li>• Reduced customer support tickets</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-500/30 rounded-lg p-4">
+              <h4 className="text-yellow-400 font-bold mb-2 flex items-center gap-2">
+                <span>⚡</span>
+                Bonus: 30-Day Money-Back Guarantee
+              </h4>
+              <p className="text-sm text-gray-300">
+                If you follow our instructions and don't see significant improvement in your email deliverability within 30 days, 
+                we'll refund your $11.99 - no questions asked.
+              </p>
             </div>
           </div>
           
@@ -369,7 +413,7 @@ export function PreviewResults({ result }: PreviewResultsProps) {
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  <span className="text-xl">Get Complete Fix Guide - Only $12</span>
+                  <span className="text-xl">Get Complete Fix Guide - Only $11.99</span>
                 </>
               )}
             </span>
