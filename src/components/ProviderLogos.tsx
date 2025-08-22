@@ -11,14 +11,154 @@ const LogoSVG = ({ name, children }: { name: string; children: React.ReactNode }
 );
 
 export function ProviderLogos({ className = '' }: ProviderLogosProps) {
-  // List of major DNS/email providers with actual logos
+  // Major email providers with accurate brand logos
   const providers = [
     { 
-      name: 'GoDaddy', 
+      name: 'Google Workspace', 
       logo: (
-        <LogoSVG name="GoDaddy">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-green-500">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        <LogoSVG name="Google Workspace">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <path fill="#4285f4" d="M240 100.1c0-7.4-.7-14.5-1.9-21.5H128v40.7h62.7c-2.7 13.6-10.8 25.2-23 32.9v27.3h37.2c21.8-20.1 34.4-49.7 34.4-79.4z"/>
+            <path fill="#34a853" d="M128 244c31.1 0 57.2-10.3 76.3-27.9l-37.2-27.3c-10.3 6.9-23.5 11-39.1 11-30 0-55.4-20.3-64.5-47.6H25.7v28.2C45 222.1 83.8 244 128 244z"/>
+            <path fill="#fbbc04" d="M63.5 151.2c-2.3-6.9-3.6-14.3-3.6-21.8s1.3-14.9 3.6-21.8V79.4H25.7C18.6 93.4 15 110.2 15 128s3.6 34.6 10.7 48.6l37.8-25.4z"/>
+            <path fill="#ea4335" d="M128 53.8c16.9 0 32.1 5.8 44.1 17.2l33.1-33.1C185.1 18.4 158.9 8 128 8 83.8 8 45 29.9 25.7 71.6l37.8 25.4c9.1-27.3 34.5-47.6 64.5-47.6z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'Microsoft 365', 
+      logo: (
+        <LogoSVG name="Microsoft 365">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <path fill="#ff5722" d="M121 121H0V0h121z"/>
+            <path fill="#4caf50" d="M256 121H135V0h121z"/>
+            <path fill="#03a9f4" d="M121 256H0V135h121z"/>
+            <path fill="#ff9800" d="M256 256H135V135h121z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'SendGrid', 
+      logo: (
+        <LogoSVG name="SendGrid">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <path fill="#1a82e2" d="M37.8 37.8h37.8v37.8H37.8zm75.6 0h37.8v37.8h-37.8zm75.6 0H227v37.8h-37.8zM37.8 113.4h37.8v37.8H37.8zm151.2 0H227v37.8h-37.8zM37.8 189h37.8v37.8H37.8zm75.6 0h37.8v37.8h-37.8zm75.6 0H227v37.8h-37.8z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'Mailgun', 
+      logo: (
+        <LogoSVG name="Mailgun">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#f05133"/>
+            <path fill="white" d="M128 45c45.8 0 83 37.2 83 83s-37.2 83-83 83-83-37.2-83-83 37.2-83 83-83zm0 20c-34.8 0-63 28.2-63 63s28.2 63 63 63 63-28.2 63-63-28.2-63-63-63z"/>
+            <path fill="#f05133" d="M128 85c23.7 0 43 19.3 43 43s-19.3 43-43 43-43-19.3-43-43 19.3-43 43-43z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'Mailchimp', 
+      logo: (
+        <LogoSVG name="Mailchimp">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <path fill="#ffe01b" d="M128 10C62.8 10 10 62.8 10 128s52.8 118 118 118 118-52.8 118-118S193.2 10 128 10z"/>
+            <path fill="#241c15" d="M128 40c48.6 0 88 39.4 88 88s-39.4 88-88 88-88-39.4-88-88 39.4-88 88-88zm-25 65c-8 0-15 7-15 15s7 15 15 15 15-7 15-15-7-15-15-15zm50 0c-8 0-15 7-15 15s7 15 15 15 15-7 15-15-7-15-15-15z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'HubSpot', 
+      logo: (
+        <LogoSVG name="HubSpot">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#ff7a59"/>
+            <path fill="white" d="M128 45c-8 0-15 6-15 14v25h-20c-8 0-14 6-14 14s6 14 14 14h20v36c0 25 20 45 45 45s45-20 45-45v-36h20c8 0 14-6 14-14s-6-14-14-14h-20V59c0-8-7-14-15-14s-14 6-14 14v25h-31V59c0-8-7-14-15-14z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'Constant Contact', 
+      logo: (
+        <LogoSVG name="Constant Contact">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#1f5f99"/>
+            <path fill="white" d="M100 100h56c17 0 31 14 31 31v56c0 17-14 31-31 31h-56c-17 0-31-14-31-31v-56c0-17 14-31 31-31zm28 25c-20 0-36 16-36 36s16 36 36 36 36-16 36-36-16-36-36-36z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'Campaign Monitor', 
+      logo: (
+        <LogoSVG name="Campaign Monitor">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#1976d2"/>
+            <path fill="white" d="M180 100L128 152 76 100h104z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'ActiveCampaign', 
+      logo: (
+        <LogoSVG name="ActiveCampaign">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#1c3e5a"/>
+            <path fill="#37cfee" d="M128 50c43 0 78 35 78 78s-35 78-78 78-78-35-78-78 35-78 78-78zm0 30c-27 0-48 21-48 48s21 48 48 48 48-21 48-48-21-48-48-48z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'ConvertKit', 
+      logo: (
+        <LogoSVG name="ConvertKit">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#fb6970"/>
+            <path fill="white" d="M85 85h86c8 0 15 7 15 15v56c0 8-7 15-15 15H85c-8 0-15-7-15-15v-56c0-8 7-15 15-15z"/>
+            <path fill="#fb6970" d="M128 110l-30 25 60-50-30 25z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'Klaviyo', 
+      logo: (
+        <LogoSVG name="Klaviyo">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#000"/>
+            <path fill="white" d="M70 70h30l45 60-45 56h-30l45-56-45-60zm86 0h30v116h-30V70z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'Amazon SES', 
+      logo: (
+        <LogoSVG name="Amazon SES">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <path fill="#ff9900" d="M50 180c40 30 100 30 140 0l-15-25c-30 20-80 20-110 0l-15 25z"/>
+            <path fill="#232f3e" d="M40 40h176v100L128 200 40 140V40z"/>
+            <path fill="#ff9900" d="M70 70h116v40L128 150 70 110V70z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'Postmark', 
+      logo: (
+        <LogoSVG name="Postmark">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#ffdd57"/>
+            <path fill="#363636" d="M70 90v76l58-38-58-38zm116 0l-58 38 58 38V90z"/>
+            <path fill="#ffdd57" d="M128 128L70 90h116l-58 38z"/>
           </svg>
         </LogoSVG>
       )
@@ -27,9 +167,22 @@ export function ProviderLogos({ className = '' }: ProviderLogosProps) {
       name: 'Cloudflare', 
       logo: (
         <LogoSVG name="Cloudflare">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-orange-500">
-            <path d="M5.5 16L3 12.5 5.5 9h13l2.5 3.5L18.5 16h-13z"/>
-            <path d="M12 7.5c-2.5 0-4.5 2-4.5 4.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5z" fill="none" stroke="currentColor" strokeWidth="1"/>
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <path fill="#f48120" d="M180 150c8-20-5-40-25-40H90l20-40c20-40 70-40 90 0l-20 40h40c20 0 35 15 35 35s-15 35-35 35h-40z"/>
+            <path fill="#faad3f" d="M90 150h65c20 0 25 20 25 20H70s5-20 20-20z"/>
+          </svg>
+        </LogoSVG>
+      )
+    },
+    { 
+      name: 'GoDaddy', 
+      logo: (
+        <LogoSVG name="GoDaddy">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#1baa6e"/>
+            <path fill="white" d="M85 85c25 0 45 20 45 45v41c0 25-20 45-45 45s-45-20-45-45v-41c0-25 20-45 45-45zm86 0c25 0 45 20 45 45v41c0 25-20 45-45 45s-45-20-45-45v-41c0-25 20-45 45-45z"/>
+            <circle cx="85" cy="110" r="15" fill="#1baa6e"/>
+            <circle cx="171" cy="110" r="15" fill="#1baa6e"/>
           </svg>
         </LogoSVG>
       )
@@ -38,116 +191,44 @@ export function ProviderLogos({ className = '' }: ProviderLogosProps) {
       name: 'Namecheap', 
       logo: (
         <LogoSVG name="Namecheap">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-orange-600">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#de3910"/>
+            <path fill="white" d="M50 100h40l20 56h-20l-40-56zm56 0h40l40 56h-20l-60-56zm100 0v56h-20v-56h20z"/>
           </svg>
         </LogoSVG>
       )
     },
     { 
-      name: 'Google Domains', 
+      name: 'GetResponse', 
       logo: (
-        <LogoSVG name="Google Domains">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-blue-500">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        <LogoSVG name="GetResponse">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#00baff"/>
+            <path fill="white" d="M70 90c0-10 10-20 20-20h76c10 0 20 10 20 20v76c0 10-10 20-20 20H90c-10 0-20-10-20-20V90zm40 20v56l40-28-40-28z"/>
           </svg>
         </LogoSVG>
       )
     },
     { 
-      name: 'Route 53', 
+      name: 'AWeber', 
       logo: (
-        <LogoSVG name="Route 53">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-orange-400">
-            <path d="M7 7v10c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V7c0-.55-.45-1-1-1H8c-.55 0-1 .45-1 1zm2.5 2h5c.28 0 .5.22.5.5s-.22.5-.5.5h-5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 2h5c.28 0 .5.22.5.5s-.22.5-.5.5h-5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 2h3c.28 0 .5.22.5.5s-.22.5-.5.5h-3c-.28 0-.5-.22-.5-.5s.22-.5.5-.5z"/>
-            <path d="M2 4v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2zm2 0h16v16H4V4z" fill="none" stroke="currentColor" strokeWidth="0.5"/>
+        <LogoSVG name="AWeber">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <circle cx="128" cy="128" r="128" fill="#1e73be"/>
+            <path fill="white" d="M60 100h40l20 56 20-56h40l-35 56 35 56h-40l-20-56-20 56H60l35-56-35-56z"/>
           </svg>
         </LogoSVG>
       )
     },
     { 
-      name: 'Gmail', 
+      name: 'Salesforce', 
       logo: (
-        <LogoSVG name="Gmail">
-          <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-            <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.5 4.64 12 9.548l6.5-4.908 1.573-1.147C21.69 2.28 24 3.434 24 5.457z" fill="#D44638"/>
-          </svg>
-        </LogoSVG>
-      )
-    },
-    { 
-      name: 'Outlook', 
-      logo: (
-        <LogoSVG name="Outlook">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-blue-600">
-            <path d="M7.88 12.04q0 .45-.11.87-.1.41-.33.74-.22.33-.58.52-.37.2-.87.2t-.85-.2q-.35-.21-.57-.55-.22-.33-.33-.75-.1-.42-.1-.83 0-.43.1-.85.1-.42.34-.78.23-.34.58-.54.35-.2.87-.2t.86.2q.35.2.57.54.22.34.31.78.1.4.1.85zM1.14 8.17v7.66q0 .31.23.54.22.22.53.22h3.86q.31 0 .54-.22.22-.23.22-.54V8.17q0-.31-.22-.53-.23-.23-.54-.23H1.9q-.31 0-.53.23-.23.22-.23.53zm6.9 0v7.66q0 .31.23.54.22.22.54.22h12.28q.31 0 .54-.22.22-.23.22-.54V8.17q0-.31-.22-.53-.23-.23-.54-.23H8.81q-.32 0-.54.23-.23.22-.23.53z"/>
-          </svg>
-        </LogoSVG>
-      )
-    },
-    { 
-      name: 'Yahoo Mail', 
-      logo: (
-        <LogoSVG name="Yahoo Mail">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-purple-600">
-            <path d="M12.09 13.119c-.936 1.932-2.217 4.548-2.853 5.728-.616 1.074-1.127.931-1.127.931s-1.125.04-1.127-.931c-.001-.971.541-2.317.541-2.317.671-1.552 1.913-4.119 1.913-4.119.284-.619.251-1.271.251-1.271 0 0-.102-.356-.102-.475 0-.296.15-.475.15-.475s.15-.119.15-.357c.001-.238-.15-.357-.15-.357s-.15-.238-.15-.357c0-.119.15-.238.15-.238s.284-.357.551-.357.551.238.551.238.15.119.15.238c0 .119-.15.238-.15.357s-.15.119-.15.357.15.238.15.357-.15.179-.15.475c0 .119-.102.475-.102.475 0 0-.034.652.251 1.271 0 0 1.242 2.567 1.913 4.119 0 0 .542 1.346.541 2.317-.002.971-1.127.931-1.127.931s-.511.143-1.127-.931c-.636-1.18-1.917-3.796-2.853-5.728z"/>
-          </svg>
-        </LogoSVG>
-      )
-    },
-    { 
-      name: 'Office 365', 
-      logo: (
-        <LogoSVG name="Office 365">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-red-500">
-            <path d="M2 3v18l6-3V6z" fill="#ea3e23"/>
-            <path d="M22 3H8l6 9-6 9h14V3z" fill="#fff"/>
-            <path d="M22 3H8v18h14V3z" fill="none" stroke="#ea3e23" strokeWidth="1"/>
-          </svg>
-        </LogoSVG>
-      )
-    },
-    { 
-      name: 'Google Workspace', 
-      logo: (
-        <LogoSVG name="Google Workspace">
-          <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-            <path d="M6 2c-1.105 0-2 .895-2 2v16c0 1.105.895 2 2 2h12c1.105 0 2-.895 2-2V8.414c0-.526-.214-1.042-.586-1.414l-4.828-4.828A2.002 2.002 0 0 0 13.172 2H6zm0 2h7v4c0 .552.448 1 1 1h4v11H6V4z" fill="#4285F4"/>
-            <path d="M14 2v4c0 .552.448 1 1 1h4" fill="none" stroke="#4285F4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </LogoSVG>
-      )
-    },
-    { 
-      name: 'Zoho Mail', 
-      logo: (
-        <LogoSVG name="Zoho Mail">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-red-600">
-            <path d="M1.5 6.5v11A2.5 2.5 0 0 0 4 20h16a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 20 4H4a2.5 2.5 0 0 0-2.5 2.5zm4.5 0L12 12l6-5.5H6zm-2.5 1.2L9.4 12 3.5 16.8V7.7zm2.1 9.8L12 12l6.9 5.5H5.6zm13.9-1.7L14.6 12l5.9-4.3v8.6z" fill="#d94f3d"/>
-          </svg>
-        </LogoSVG>
-      )
-    },
-    { 
-      name: 'DigitalOcean', 
-      logo: (
-        <LogoSVG name="DigitalOcean">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-blue-500">
-            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
-            <path d="M12 6v6h6c0-3.314-2.686-6-6-6z" fill="#0080ff"/>
-          </svg>
-        </LogoSVG>
-      )
-    },
-    { 
-      name: 'Hostinger', 
-      logo: (
-        <LogoSVG name="Hostinger">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-purple-600">
-            <path d="M12 2L2 7v10l10 5 10-5V7l-10-5zm0 2.2L19.5 8 12 11.8 4.5 8 12 4.2zM4 9.47l7 3.5v7.53l-7-3.5V9.47zm16 0v7.53l-7 3.5v-7.53l7-3.5z"/>
+        <LogoSVG name="Salesforce">
+          <svg viewBox="0 0 256 256" className="w-6 h-6">
+            <path fill="#00a1e0" d="M90 100c30-20 70-10 80 20 20-10 40 0 50 20 10-5 25 5 25 20 0 15-15 25-30 20h-95c-20 0-35-15-35-35s15-35 35-35c-10-15 0-30 15-25 15-10 35 0 40 20l-85-5z"/>
+            <circle cx="80" cy="120" r="25" fill="white" opacity="0.8"/>
+            <circle cx="140" cy="110" r="20" fill="white" opacity="0.6"/>
+            <circle cx="190" cy="130" r="15" fill="white" opacity="0.4"/>
           </svg>
         </LogoSVG>
       )
