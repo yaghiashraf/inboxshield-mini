@@ -231,7 +231,7 @@ export default function SuccessPage() {
                 our support team is here to help.
               </p>
               <a 
-                href="mailto:support@inboxshield.com"
+                href="mailto:hello@inboxshield-mini.com"
                 className="text-blue-400 hover:text-blue-300 underline text-sm font-medium"
               >
                 Contact Support →

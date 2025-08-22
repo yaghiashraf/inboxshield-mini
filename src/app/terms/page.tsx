@@ -92,7 +92,7 @@ export default function TermsOfService() {
                   <li>Service unavailability for extended periods</li>
                 </ul>
                 <p>
-                  Refund requests must be submitted within 7 days of purchase. Contact us at support@inboxshield.com for refund requests.
+                  Refund requests must be submitted within 7 days of purchase. Contact us at hello@inboxshield-mini.com for refund requests.
                 </p>
               </div>
             </section>
@@ -214,7 +214,7 @@ export default function TermsOfService() {
                   These Terms shall be interpreted and governed by the laws of [Your Jurisdiction], without regard to its conflict of law provisions.
                 </p>
                 <p>
-                  <strong className="text-white">Dispute Resolution:</strong> We prefer to resolve disputes amicably. Please contact us first at legal@inboxshield.com. If we cannot resolve a dispute informally, any legal disputes will be resolved through binding arbitration.
+                  <strong className="text-white">Dispute Resolution:</strong> We prefer to resolve disputes amicably. Please contact us first at hello@inboxshield-mini.com. If we cannot resolve a dispute informally, any legal disputes will be resolved through binding arbitration.
                 </p>
               </div>
             </section>
@@ -245,10 +245,10 @@ export default function TermsOfService() {
               <div className="text-gray-300 space-y-4">
                 <p>If you have any questions about these Terms of Service, please contact us:</p>
                 <div className="bg-gray-700/50 rounded-lg p-4 mt-4">
-                  <p><strong className="text-white">General Support:</strong> support@inboxshield.com</p>
-                  <p><strong className="text-white">Legal Questions:</strong> legal@inboxshield.com</p>
-                  <p><strong className="text-white">Refund Requests:</strong> support@inboxshield.com</p>
-                  <p><strong className="text-white">Website:</strong> https://inboxshield.com</p>
+                  <p><strong className="text-white">General Support:</strong> hello@inboxshield-mini.com</p>
+                  <p><strong className="text-white">Legal Questions:</strong> hello@inboxshield-mini.com</p>
+                  <p><strong className="text-white">Refund Requests:</strong> hello@inboxshield-mini.com</p>
+                  <p><strong className="text-white">Website:</strong> https://inboxshield-mini.netlify.app</p>
                   <p><strong className="text-white">Response Time:</strong> We aim to respond within 48 hours</p>
                 </div>
               </div>

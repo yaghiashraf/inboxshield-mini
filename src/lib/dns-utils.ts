@@ -126,11 +126,36 @@ export function parseDMARCRecord(record: string): {
 }
 
 export function validateDomainFormat(domain: string): boolean {
+  // Strict domain validation with security checks
+  if (!domain || typeof domain !== 'string') {
+    return false;
+  }
+  
+  const trimmed = domain.trim().toLowerCase();
+  
+  // Security checks
+  if (trimmed.length < 3 || trimmed.length > 253) {
+    return false;
+  }
+  
+  // Prevent malicious patterns
+  if (trimmed.includes('..') || 
+      trimmed.includes('localhost') || 
+      trimmed.includes('127.0.0.1') ||
+      trimmed.includes('0.0.0.0') ||
+      trimmed.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+    return false;
+  }
+  
+  // RFC compliant domain pattern
   const domainPattern = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-  return domainPattern.test(domain) && 
-         domain.includes('.') && 
-         !domain.startsWith('.') && 
-         !domain.endsWith('.');
+  
+  return domainPattern.test(trimmed) && 
+         trimmed.includes('.') && 
+         !trimmed.startsWith('.') && 
+         !trimmed.endsWith('.') &&
+         !trimmed.startsWith('-') &&
+         !trimmed.endsWith('-');
 }
 
 export function generateSPFFix(domain: string, currentRecord?: string): string {

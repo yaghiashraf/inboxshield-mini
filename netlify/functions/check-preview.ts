@@ -13,6 +13,29 @@ import {
 const cache = new Map<string, { data: DomainCheckResult; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
 
+// Rate limiting: simple in-memory store
+const rateLimitStore = new Map<string, { requests: number; resetTime: number }>();
+const RATE_LIMIT_REQUESTS = 10; // requests per window
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute window
+
+function checkRateLimit(clientIP: string): { allowed: boolean; remaining: number } {
+  const now = Date.now();
+  const clientData = rateLimitStore.get(clientIP);
+  
+  if (!clientData || now > clientData.resetTime) {
+    // Reset or initialize
+    rateLimitStore.set(clientIP, { requests: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return { allowed: true, remaining: RATE_LIMIT_REQUESTS - 1 };
+  }
+  
+  if (clientData.requests >= RATE_LIMIT_REQUESTS) {
+    return { allowed: false, remaining: 0 };
+  }
+  
+  clientData.requests++;
+  return { allowed: true, remaining: RATE_LIMIT_REQUESTS - clientData.requests };
+}
+
 export const handler: Handler = async (event, context) => {
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
@@ -38,18 +61,60 @@ export const handler: Handler = async (event, context) => {
     };
   }
 
-  try {
-    const request: CheckRequest = JSON.parse(event.body || '{}');
-    const { domain, isPreview = true } = request;
+  // Rate limiting
+  const clientIP = event.headers['x-forwarded-for']?.split(',')[0] || 
+                   event.headers['x-real-ip'] || 
+                   context.clientContext?.identity?.url || 
+                   'unknown';
+  
+  const rateLimit = checkRateLimit(clientIP);
+  
+  if (!rateLimit.allowed) {
+    return {
+      statusCode: 429,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'X-RateLimit-Limit': RATE_LIMIT_REQUESTS.toString(),
+        'X-RateLimit-Remaining': '0',
+        'Retry-After': '60',
+      },
+      body: JSON.stringify({ 
+        error: 'Too many requests. Please try again in 1 minute.' 
+      }),
+    };
+  }
 
-    if (!domain || !validateDomainFormat(domain)) {
+  try {
+    // Validate request body
+    let request: CheckRequest;
+    try {
+      request = JSON.parse(event.body || '{}');
+    } catch (e) {
       return {
         statusCode: 400,
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ error: 'Invalid domain format' }),
+        body: JSON.stringify({ error: 'Invalid JSON in request body' }),
+      };
+    }
+
+    const { domain, isPreview = true } = request;
+
+    // Validate domain
+    if (!domain || typeof domain !== 'string' || !validateDomainFormat(domain)) {
+      return {
+        statusCode: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+          'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+        },
+        body: JSON.stringify({ 
+          error: 'Invalid domain format. Please provide a valid domain name.' 
+        }),
       };
     }
 
@@ -126,6 +191,8 @@ export const handler: Handler = async (event, context) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
         'Cache-Control': 'public, max-age=300', // 5 minutes client-side cache
+        'X-RateLimit-Limit': RATE_LIMIT_REQUESTS.toString(),
+        'X-RateLimit-Remaining': rateLimit.remaining.toString(),
       },
       body: JSON.stringify(result),
     };

@@ -35,7 +35,6 @@ export function Footer() {
               <li><a href="#features" className="text-gray-400 hover:text-white transition-colors text-sm">Features</a></li>
               <li><a href="#pricing" className="text-gray-400 hover:text-white transition-colors text-sm">Pricing</a></li>
               <li><a href="#how-it-works" className="text-gray-400 hover:text-white transition-colors text-sm">How It Works</a></li>
-              <li><Link href="/stripe-test" className="text-gray-400 hover:text-blue-400 transition-colors text-sm">🧪 Test Payment</Link></li>
             </ul>
           </div>
 
@@ -43,10 +42,9 @@ export function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">Support</h3>
             <ul className="space-y-3">
+              <li><a href="mailto:hello@inboxshield-mini.com" className="text-gray-400 hover:text-white transition-colors text-sm">Help Center</a></li>
+              <li><a href="mailto:hello@inboxshield-mini.com" className="text-gray-400 hover:text-white transition-colors text-sm">Contact Us</a></li>
               <li><Link href="/setup" className="text-gray-400 hover:text-blue-400 transition-colors text-sm">⚙️ Setup Guide</Link></li>
-              <li><a href="mailto:support@inboxshield.com" className="text-gray-400 hover:text-white transition-colors text-sm">Help Center</a></li>
-              <li><a href="mailto:support@inboxshield.com" className="text-gray-400 hover:text-white transition-colors text-sm">Contact Us</a></li>
-              <li><a href="https://status.inboxshield.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm">Status</a></li>
             </ul>
           </div>
 
@@ -56,8 +54,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li><Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
               <li><Link href="/terms" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</Link></li>
-              <li><a href="mailto:legal@inboxshield.com" className="text-gray-400 hover:text-white transition-colors text-sm">Cookie Policy</a></li>
-              <li><a href="mailto:security@inboxshield.com" className="text-gray-400 hover:text-white transition-colors text-sm">Security</a></li>
+              <li><a href="mailto:hello@inboxshield-mini.com" className="text-gray-400 hover:text-white transition-colors text-sm">Contact</a></li>
             </ul>
           </div>
         </div>

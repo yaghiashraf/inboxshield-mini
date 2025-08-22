@@ -112,7 +112,7 @@ export default function PrivacyPolicy() {
                   <li><strong className="text-white">Objection:</strong> Object to certain processing activities</li>
                 </ul>
                 <p className="mt-4">
-                  To exercise these rights, please contact us at privacy@inboxshield.com. We will respond to your request within 30 days.
+                  To exercise these rights, please contact us at hello@inboxshield-mini.com. We will respond to your request within 30 days.
                 </p>
               </div>
             </section>
@@ -161,8 +161,8 @@ export default function PrivacyPolicy() {
               <div className="text-gray-300 space-y-4">
                 <p>If you have questions about this privacy policy or our data practices, please contact us:</p>
                 <div className="bg-gray-700/50 rounded-lg p-4 mt-4">
-                  <p><strong className="text-white">Email:</strong> privacy@inboxshield.com</p>
-                  <p><strong className="text-white">Website:</strong> https://inboxshield.com</p>
+                  <p><strong className="text-white">Email:</strong> hello@inboxshield-mini.com</p>
+                  <p><strong className="text-white">Website:</strong> https://inboxshield-mini.netlify.app</p>
                   <p><strong className="text-white">Response Time:</strong> We aim to respond within 48 hours</p>
                 </div>
               </div>

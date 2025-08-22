@@ -118,7 +118,7 @@ export default function ReportPage() {
                 We couldn't verify your payment or load your report. Please contact support if you believe this is an error.
               </p>
               <a
-                href="mailto:support@inboxshield.com"
+                href="mailto:hello@inboxshield-mini.com"
                 className="inline-flex items-center bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 px-6 rounded-lg transition-colors"
               >
                 Contact Support

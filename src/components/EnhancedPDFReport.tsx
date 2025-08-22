@@ -241,7 +241,7 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
       {/* Footer */}
       <Text style={styles.footer}>
         InboxShield Mini Professional Report • Generated on {new Date().toLocaleDateString()} • 
-        Support: support@inboxshield.com • Report ID: {reportData.reportId}
+        Support: hello@inboxshield-mini.com • Report ID: {reportData.reportId}
       </Text>
     </Page>
   </Document>
