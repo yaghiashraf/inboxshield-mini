@@ -241,8 +241,9 @@ function generateRecommendations(result: DomainCheckResult) {
 
 function generateProviderInstructions(result: DomainCheckResult) {
   return {
+    // DNS Providers
     godaddy: {
-      name: 'GoDaddy',
+      name: 'GoDaddy DNS',
       steps: [
         '1. Log into your GoDaddy account',
         '2. Go to Domain Manager',
@@ -252,7 +253,7 @@ function generateProviderInstructions(result: DomainCheckResult) {
       ]
     },
     cloudflare: {
-      name: 'Cloudflare',
+      name: 'Cloudflare DNS',
       steps: [
         '1. Log into Cloudflare dashboard',
         '2. Select your domain',
@@ -262,13 +263,94 @@ function generateProviderInstructions(result: DomainCheckResult) {
       ]
     },
     namecheap: {
-      name: 'Namecheap',
+      name: 'Namecheap DNS',
       steps: [
         '1. Log into Namecheap account',
         '2. Go to Domain List',
         '3. Click Manage next to your domain',
         '4. Go to Advanced DNS tab',
         '5. Add new TXT records with provided values'
+      ]
+    },
+    // Email Service Providers - DKIM Setup
+    googleWorkspace: {
+      name: 'Google Workspace DKIM',
+      steps: [
+        '1. Sign in to Google Admin Console',
+        '2. Go to Apps > Gmail > Authenticate email',
+        '3. Select your domain and click "Generate new record"',
+        '4. Copy the DNS record and add it to your DNS provider',
+        '5. Return to Google Admin and click "Start authentication"'
+      ]
+    },
+    microsoft365: {
+      name: 'Microsoft 365 DKIM',
+      steps: [
+        '1. Sign in to Microsoft 365 admin center',
+        '2. Go to Exchange admin center',
+        '3. Navigate to Protection > DKIM',
+        '4. Select your domain and click "Enable"',
+        '5. Add the provided CNAME records to your DNS'
+      ]
+    },
+    sendgrid: {
+      name: 'SendGrid Authentication',
+      steps: [
+        '1. Log into SendGrid dashboard',
+        '2. Go to Settings > Sender Authentication',
+        '3. Click "Authenticate Your Domain"',
+        '4. Enter your domain and select DNS provider',
+        '5. Add all provided DNS records (SPF, DKIM, CNAME)'
+      ]
+    },
+    mailgun: {
+      name: 'Mailgun Domain Setup',
+      steps: [
+        '1. Log into Mailgun dashboard',
+        '2. Go to Domains section',
+        '3. Click "Add New Domain"',
+        '4. Follow the domain verification process',
+        '5. Add all DNS records provided by Mailgun'
+      ]
+    },
+    mailchimp: {
+      name: 'Mailchimp Domain Authentication',
+      steps: [
+        '1. Log into Mailchimp account',
+        '2. Go to Account > Settings > Domains',
+        '3. Click "Authenticate a Domain"',
+        '4. Enter your domain and verify ownership',
+        '5. Add the DKIM DNS records to your domain'
+      ]
+    },
+    hubspot: {
+      name: 'HubSpot Email Authentication',
+      steps: [
+        '1. In HubSpot, go to Settings > Marketing > Email',
+        '2. Click "Connect a domain"',
+        '3. Enter your domain and click "Connect"',
+        '4. Add the provided DNS records to your domain',
+        '5. Return to HubSpot and verify the connection'
+      ]
+    },
+    constantcontact: {
+      name: 'Constant Contact Authentication',
+      steps: [
+        '1. Log into Constant Contact',
+        '2. Go to Account Settings',
+        '3. Click on "Email Authentication"',
+        '4. Follow the domain setup wizard',
+        '5. Add DNS records and verify authentication'
+      ]
+    },
+    activecampaign: {
+      name: 'ActiveCampaign Domain Setup',
+      steps: [
+        '1. In ActiveCampaign, go to Settings',
+        '2. Click "Advanced" then "Domain Authentication"',
+        '3. Enter your domain information',
+        '4. Add the provided DNS records',
+        '5. Complete the verification process'
       ]
     }
   };

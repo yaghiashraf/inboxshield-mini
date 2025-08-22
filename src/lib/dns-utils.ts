@@ -134,18 +134,64 @@ export function validateDomainFormat(domain: string): boolean {
 }
 
 export function generateSPFFix(domain: string, currentRecord?: string): string {
-  // This is a basic SPF record template - in production, this would be more sophisticated
+  // If no current record, suggest comprehensive SPF with common providers
   if (!currentRecord) {
-    return `"v=spf1 include:_spf.google.com ~all"`;
+    const commonProviders = [
+      'include:_spf.google.com',        // Google Workspace
+      'include:spf.protection.outlook.com',  // Microsoft 365
+      'include:sendgrid.net',           // SendGrid
+      'include:mailgun.org',            // Mailgun
+      'include:servers.mcsv.net',       // Mailchimp
+      'include:spf.constantcontact.com', // Constant Contact
+      'include:_spf.hubspot.com',       // HubSpot
+      'include:spf.createsend.com',     // Campaign Monitor
+      'include:spf.messagelabs.com',    // Symantec Email Security
+      'include:amazonses.com',          // Amazon SES
+    ];
+    
+    return `"v=spf1 ${commonProviders.slice(0, 3).join(' ')} ~all"`;
   }
   
-  // If record exists but has issues, suggest improvements
+  // If record exists, analyze and improve it
   const parsed = parseSPFRecord(currentRecord);
+  let improvedRecord = currentRecord;
+  
+  // Fix soft fail to hard fail for better security
   if (parsed.hasSoftFail && !parsed.hasHardFail) {
-    return currentRecord.replace('~all', '-all');
+    improvedRecord = improvedRecord.replace('~all', '-all');
   }
   
-  return currentRecord;
+  // Add missing fail policy
+  if (!parsed.hasHardFail && !parsed.hasSoftFail) {
+    improvedRecord = improvedRecord.trim() + ' -all';
+  }
+  
+  // Detect missing common providers and suggest adding them
+  const missingProviders = [];
+  const recordLower = improvedRecord.toLowerCase();
+  
+  if (!recordLower.includes('_spf.google.com') && !recordLower.includes('gmail')) {
+    missingProviders.push('include:_spf.google.com');
+  }
+  if (!recordLower.includes('spf.protection.outlook.com') && !recordLower.includes('office365')) {
+    missingProviders.push('include:spf.protection.outlook.com');
+  }
+  if (!recordLower.includes('sendgrid') && !recordLower.includes('sg.')) {
+    missingProviders.push('include:sendgrid.net');
+  }
+  
+  // If we detected missing common providers, suggest adding them (but limit to avoid lookup limit)
+  if (missingProviders.length > 0 && parsed.lookupCount < 8) {
+    const providersToAdd = missingProviders.slice(0, 10 - parsed.lookupCount);
+    const insertPosition = improvedRecord.lastIndexOf('all') || improvedRecord.lastIndexOf('redirect=');
+    if (insertPosition > 0) {
+      improvedRecord = improvedRecord.substring(0, insertPosition) + 
+                     providersToAdd.join(' ') + ' ' + 
+                     improvedRecord.substring(insertPosition);
+    }
+  }
+  
+  return `"${improvedRecord}"`;
 }
 
 export function generateDMARCFix(domain: string, currentRecord?: string): string {

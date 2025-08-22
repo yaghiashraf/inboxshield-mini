@@ -118,32 +118,175 @@ export async function checkDMARC(domain: string, isPreview: boolean = false): Pr
 
 export async function checkDKIM(domain: string, isPreview: boolean = false): Promise<DKIMResult> {
   const commonSelectors = [
-    'default',
+    // Google Workspace & Gmail
     'google',
     'gmail',
-    'k1',
-    'dkim',
+    
+    // Microsoft 365 & Outlook
     'selector1',
     'selector2',
+    'oe0001-en',
+    'oe0001-es',
+    
+    // SendGrid
+    's1',
+    's2',
+    'smtpapi',
+    
+    // Mailgun
+    'mg',
+    'mg1',
+    'k1',
+    
+    // Mailchimp
+    'k1',
+    'dkim',
+    'mc',
+    
+    // Constant Contact
+    'cc',
+    'constantcontact',
+    
+    // HubSpot
+    'hs1-',
+    'hs2-',
+    'hubspot',
+    
+    // Campaign Monitor
+    'cm',
+    'campaignmonitor',
+    
+    // ActiveCampaign
+    'ac',
+    'activecampaign',
+    
+    // ConvertKit
+    'ck',
+    'convertkit',
+    
+    // AWeber
+    'aweber',
+    'aw',
+    
+    // GetResponse
+    'getresponse',
+    'gr',
+    
+    // Drip
+    'drip',
+    
+    // Klaviyo
+    'klaviyo',
+    'dkim',
+    
+    // Postmark
+    'pm',
+    'postmark',
+    
+    // Amazon SES
+    'amazonses',
+    'aws',
+    'ses',
+    
+    // Mandrill
+    'mandrill',
+    
+    // Zendesk
+    'zendesk1',
+    'zendesk2',
+    
+    // Salesforce
+    'salesforce',
+    'sfdc',
+    
+    // Generic selectors
+    'default',
     'mail',
-    'email'
+    'email',
+    'mx',
+    'smtp'
   ];
 
   const providerGuidance: ProviderGuidance[] = [
     {
       provider: 'Google Workspace',
       commonSelectors: ['google', 'gmail'],
-      setupInstructions: 'Admin Console > Apps > Gmail > Authenticate Email'
+      setupInstructions: 'Admin Console > Apps > Gmail > Authenticate Email > Generate new record'
     },
     {
       provider: 'Microsoft 365',
-      commonSelectors: ['selector1', 'selector2'],
-      setupInstructions: 'Microsoft 365 Admin Center > Exchange > Mail Flow > Rules'
+      commonSelectors: ['selector1', 'selector2', 'oe0001-en'],
+      setupInstructions: 'Microsoft 365 Admin Center > Exchange > Mail Flow > Configure DKIM'
     },
     {
       provider: 'SendGrid',
-      commonSelectors: ['s1', 's2'],
-      setupInstructions: 'SendGrid Dashboard > Settings > Sender Authentication'
+      commonSelectors: ['s1', 's2', 'smtpapi'],
+      setupInstructions: 'SendGrid Dashboard > Settings > Sender Authentication > Domain Authentication'
+    },
+    {
+      provider: 'Mailgun',
+      commonSelectors: ['mg', 'mg1', 'k1'],
+      setupInstructions: 'Mailgun Dashboard > Domains > Domain Verification > DKIM Settings'
+    },
+    {
+      provider: 'Mailchimp',
+      commonSelectors: ['k1', 'dkim', 'mc'],
+      setupInstructions: 'Mailchimp > Account > Settings > Domains > Authenticate Domain'
+    },
+    {
+      provider: 'Constant Contact',
+      commonSelectors: ['cc', 'constantcontact'],
+      setupInstructions: 'Constant Contact > Account Settings > Email Authentication'
+    },
+    {
+      provider: 'HubSpot',
+      commonSelectors: ['hs1-', 'hs2-', 'hubspot'],
+      setupInstructions: 'HubSpot > Settings > Marketing > Email > Connect Domain'
+    },
+    {
+      provider: 'Campaign Monitor',
+      commonSelectors: ['cm', 'campaignmonitor'],
+      setupInstructions: 'Campaign Monitor > Account Settings > Client Settings > Authentication'
+    },
+    {
+      provider: 'ActiveCampaign',
+      commonSelectors: ['ac', 'activecampaign'],
+      setupInstructions: 'ActiveCampaign > Settings > Advanced > Domain Authentication'
+    },
+    {
+      provider: 'ConvertKit',
+      commonSelectors: ['ck', 'convertkit'],
+      setupInstructions: 'ConvertKit > Account Settings > Domain Authentication'
+    },
+    {
+      provider: 'AWeber',
+      commonSelectors: ['aweber', 'aw'],
+      setupInstructions: 'AWeber > Account Settings > Domain Authentication'
+    },
+    {
+      provider: 'GetResponse',
+      commonSelectors: ['getresponse', 'gr'],
+      setupInstructions: 'GetResponse > Menu > Email Marketing > Domain Authentication'
+    },
+    {
+      provider: 'Klaviyo',
+      commonSelectors: ['klaviyo', 'dkim'],
+      setupInstructions: 'Klaviyo > Account > Settings > Domains & Hosting > Add Domain'
+    },
+    {
+      provider: 'Postmark',
+      commonSelectors: ['pm', 'postmark'],
+      setupInstructions: 'Postmark > Servers > Default Transactional Stream > Settings > DKIM'
+    },
+    {
+      provider: 'Amazon SES',
+      commonSelectors: ['amazonses', 'aws', 'ses'],
+      setupInstructions: 'AWS Console > SES > Domains > Domain Verification > Generate DKIM'
+    },
+    {
+      provider: 'Salesforce',
+      commonSelectors: ['salesforce', 'sfdc'],
+      setupInstructions: 'Salesforce Setup > Email Administration > Deliverability > Domain Keys'
     }
   ];
 
