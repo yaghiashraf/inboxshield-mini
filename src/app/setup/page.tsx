@@ -1,11 +1,69 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { detectDNSProvider, getProviderInstructions, DNSProvider } from '@/lib/dns-utils';
 
-export default function SetupPage() {
+function SetupContent() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [detectedProvider, setDetectedProvider] = useState<DNSProvider | null>(null);
+  const [providerInstructions, setProviderInstructions] = useState<any>(null);
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [domain, setDomain] = useState<string>('');
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // Try to get domain from URL params or localStorage
+    const urlDomain = searchParams?.get('domain');
+    const storedDomain = typeof window !== 'undefined' ? localStorage.getItem('lastAnalyzedDomain') : null;
+    const targetDomain = urlDomain || storedDomain;
+
+    if (targetDomain) {
+      setDomain(targetDomain);
+      detectProvider(targetDomain);
+    }
+  }, [searchParams]);
+
+  const detectProvider = async (domainName: string) => {
+    setIsDetecting(true);
+    try {
+      const provider = await detectDNSProvider(domainName);
+      setDetectedProvider(provider);
+      
+      const instructions = getProviderInstructions(provider.code);
+      setProviderInstructions(instructions);
+      
+      console.log(`Detected DNS provider: ${provider.name} (confidence: ${provider.confidence})`);
+    } catch (error) {
+      console.error('Failed to detect DNS provider:', error);
+      
+      // Fallback to generic provider
+      const genericProvider = {
+        name: 'Generic DNS Provider',
+        code: 'generic',
+        logo: '⚙️',
+        confidence: 0
+      };
+      setDetectedProvider(genericProvider);
+      setProviderInstructions(getProviderInstructions('generic'));
+    } finally {
+      setIsDetecting(false);
+    }
+  };
+
+  const handleManualDomainSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const inputDomain = formData.get('domain') as string;
+    
+    if (inputDomain && inputDomain.trim()) {
+      setDomain(inputDomain.trim());
+      detectProvider(inputDomain.trim());
+    }
+  };
 
   const providers = [
     {
@@ -81,6 +139,68 @@ export default function SetupPage() {
               Step-by-step instructions to implement your DNS fixes and secure your email delivery
             </p>
           </div>
+
+          {/* Domain Input & Provider Detection */}
+          {!domain && (
+            <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6 mb-8">
+              <h3 className="text-xl font-bold text-blue-300 mb-4 text-center">Enter Your Domain to Get Personalized Instructions</h3>
+              <form onSubmit={handleManualDomainSubmit} className="flex gap-4 max-w-md mx-auto">
+                <input
+                  type="text"
+                  name="domain"
+                  placeholder="yourcompany.com"
+                  className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  disabled={isDetecting}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-lg transition-all duration-300 disabled:opacity-50"
+                >
+                  {isDetecting ? 'Detecting...' : 'Analyze'}
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Provider Detection Result */}
+          {detectedProvider && (
+            <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-500/30 rounded-xl p-6 mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{detectedProvider.logo}</span>
+                  <div>
+                    <h3 className="text-xl font-bold text-green-300">
+                      DNS Provider Detected: {detectedProvider.name}
+                    </h3>
+                    <p className="text-green-200 text-sm">
+                      {domain && `For domain: ${domain}`}
+                      {detectedProvider.confidence > 0 && ` (Confidence: ${detectedProvider.confidence > 1 ? 'High' : 'Medium'})`}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <button
+                    onClick={() => {
+                      setDomain('');
+                      setDetectedProvider(null);
+                      setProviderInstructions(null);
+                    }}
+                    className="text-green-400 hover:text-green-300 text-sm underline"
+                  >
+                    Change Domain
+                  </button>
+                </div>
+              </div>
+              
+              {detectedProvider.confidence === 0 && (
+                <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 mt-4">
+                  <p className="text-yellow-300 text-sm">
+                    ⚠️ Could not automatically detect your DNS provider. Showing generic instructions that work with most providers.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Tab Navigation */}
           <div className="flex flex-wrap justify-center gap-2 mb-8">
@@ -195,28 +315,57 @@ export default function SetupPage() {
                   </div>
                 </div>
 
-                <div className="space-y-6">
-                  <h3 className="text-xl font-bold text-white">📝 How to Add SPF Record</h3>
-                  
-                  {providers.map((provider) => (
-                    <div key={provider.name} className="bg-gray-700/30 rounded-xl p-6">
-                      <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span>{provider.logo}</span>
-                        {provider.name}
-                      </h4>
-                      <ol className="space-y-2">
-                        {provider.steps.filter(step => step.toLowerCase().includes('spf')).map((step, index) => (
-                          <li key={index} className="flex gap-3">
-                            <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                              {index + 1}
-                            </span>
-                            <span className="text-gray-300">{step}</span>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  ))}
-                </div>
+                {providerInstructions && detectedProvider && (
+                  <div className="bg-gray-700/30 rounded-xl p-6">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span>{detectedProvider.logo}</span>
+                      SPF Setup for {detectedProvider.name}
+                    </h4>
+                    
+                    {providerInstructions.setupSteps && (
+                      <div className="mb-6">
+                        <h5 className="font-semibold text-blue-300 mb-3">Step 1: Access Your DNS Management</h5>
+                        <ol className="space-y-2">
+                          {providerInstructions.setupSteps.map((step: string, index: number) => (
+                            <li key={index} className="flex gap-3">
+                              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                                {index + 1}
+                              </span>
+                              <span className="text-gray-300">{step}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                    
+                    {providerInstructions.spfSteps && (
+                      <div>
+                        <h5 className="font-semibold text-blue-300 mb-3">Step 2: Add SPF Record</h5>
+                        <ol className="space-y-2">
+                          {providerInstructions.spfSteps.map((step: string, index: number) => (
+                            <li key={index} className="flex gap-3">
+                              <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                                {index + 1}
+                              </span>
+                              <span className="text-gray-300">{step}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+
+                    {providerInstructions.notes && (
+                      <div className="mt-6 bg-blue-900/20 border border-blue-500/20 rounded-lg p-4">
+                        <h5 className="font-semibold text-blue-300 mb-2">💡 {detectedProvider.name} Notes:</h5>
+                        <ul className="space-y-1">
+                          {providerInstructions.notes.map((note: string, index: number) => (
+                            <li key={index} className="text-blue-200 text-sm">• {note}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -253,27 +402,30 @@ export default function SetupPage() {
                   </div>
                 </div>
 
-                <div className="bg-gray-700/30 rounded-xl p-6">
-                  <h3 className="text-xl font-bold text-white mb-4">📝 DMARC Setup Instructions</h3>
-                  <ol className="space-y-3">
-                    <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
-                      <span className="text-gray-300">Create a TXT record with name "_dmarc" (or "_dmarc.yourdomain.com")</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
-                      <span className="text-gray-300">Paste your DMARC policy from your InboxShield Mini report</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
-                      <span className="text-gray-300">Save changes and wait for DNS propagation</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
-                      <span className="text-gray-300">Monitor DMARC reports to ensure proper authentication</span>
-                    </li>
-                  </ol>
-                </div>
+                {providerInstructions && detectedProvider && (
+                  <div className="bg-gray-700/30 rounded-xl p-6">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span>{detectedProvider.logo}</span>
+                      DMARC Setup for {detectedProvider.name}
+                    </h4>
+                    
+                    {providerInstructions.dmarcSteps && (
+                      <div>
+                        <h5 className="font-semibold text-purple-300 mb-3">DMARC Record Implementation</h5>
+                        <ol className="space-y-2">
+                          {providerInstructions.dmarcSteps.map((step: string, index: number) => (
+                            <li key={index} className="flex gap-3">
+                              <span className="flex-shrink-0 w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                                {index + 1}
+                              </span>
+                              <span className="text-gray-300">{step}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -305,6 +457,31 @@ export default function SetupPage() {
                   </div>
                 </div>
 
+                {providerInstructions && detectedProvider && (
+                  <div className="bg-gray-700/30 rounded-xl p-6 mb-6">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span>{detectedProvider.logo}</span>
+                      DKIM Setup for {detectedProvider.name}
+                    </h4>
+                    
+                    {providerInstructions.dkimSteps && (
+                      <div>
+                        <h5 className="font-semibold text-green-300 mb-3">DKIM Record Implementation</h5>
+                        <ol className="space-y-2">
+                          {providerInstructions.dkimSteps.map((step: string, index: number) => (
+                            <li key={index} className="flex gap-3">
+                              <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                                {index + 1}
+                              </span>
+                              <span className="text-gray-300">{step}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="bg-gray-700/30 rounded-xl p-6">
                     <h4 className="text-lg font-bold text-white mb-4">🟢 Google Workspace</h4>
@@ -328,6 +505,7 @@ export default function SetupPage() {
                 </div>
               </div>
             )}
+
 
             {/* Verification Tab */}
             {activeTab === 'verification' && (
@@ -442,5 +620,20 @@ export default function SetupPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function SetupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-white text-lg">Loading setup guide...</p>
+        </div>
+      </div>
+    }>
+      <SetupContent />
+    </Suspense>
   );
 }
