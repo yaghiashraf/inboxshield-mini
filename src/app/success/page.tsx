@@ -78,6 +78,37 @@ function SuccessContent() {
       console.log('Payment verified and report generated successfully');
     } catch (err) {
       console.error('Error verifying payment:', err);
+      
+      // Debug the actual Stripe session when verification fails
+      if (sessionId) {
+        try {
+          const debugResponse = await fetch('/.netlify/functions/debug-payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ sessionId }),
+          });
+          
+          if (debugResponse.ok) {
+            const debugData = await debugResponse.json();
+            console.log('🔍 DEBUG - Stripe session details:', debugData.session);
+            
+            // If the session is actually paid, try to proceed anyway
+            if (debugData.session.payment_status === 'paid' && debugData.session.metadata?.domain) {
+              console.log('💡 Session is paid, attempting to generate report anyway...');
+              setPaymentVerified(true);
+              const domain = debugData.session.metadata.domain;
+              setDomain(domain);
+              await generateReport(domain);
+              return;
+            }
+          }
+        } catch (debugErr) {
+          console.error('Debug request failed:', debugErr);
+        }
+      }
+      
       setError(err instanceof Error ? err.message : 'Failed to process payment');
     } finally {
       setIsGenerating(false);

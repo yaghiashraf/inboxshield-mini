@@ -101,6 +101,8 @@ export const handler: Handler = async (event, context) => {
     if (!paymentVerified) {
       // Get session details for debugging
       let debugInfo = {};
+      let emergencyOverride = false;
+      
       try {
         const session = await stripe.checkout.sessions.retrieve(sessionId);
         debugInfo = {
@@ -112,22 +114,34 @@ export const handler: Handler = async (event, context) => {
           created: session.created,
           amount_total: session.amount_total
         };
+        
+        // Emergency override: if session is clearly paid with valid amount and has domain, allow it
+        if (session.payment_status === 'paid' && 
+            session.amount_total && session.amount_total > 0 && 
+            session.metadata?.domain) {
+          console.log('🚨 EMERGENCY OVERRIDE: Payment is clearly successful, allowing report generation');
+          paymentVerified = true;
+          domain = session.metadata.domain;
+          emergencyOverride = true;
+        }
       } catch (err) {
         debugInfo = { error: 'Could not retrieve session for debugging' };
       }
 
-      return {
-        statusCode: 403,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          error: 'Payment verification failed',
-          paymentVerified: false,
-          debug: debugInfo
-        }),
-      };
+      if (!emergencyOverride) {
+        return {
+          statusCode: 403,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            error: 'Payment verification failed',
+            paymentVerified: false,
+            debug: debugInfo
+          }),
+        };
+      }
     }
 
     // Generate the full report
