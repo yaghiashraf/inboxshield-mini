@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
 });
 
 interface PDFReportProps {
-  result: DomainCheckResult;
+  reportData: any; // Extended report data with DNS fixes and recommendations
 }
 
 const getStatusIcon = (status: 'pass' | 'warn' | 'fail') => {
@@ -124,20 +124,20 @@ const getScoreColor = (score: number) => {
   return '#DC2626';
 };
 
-export const PDFReport: React.FC<PDFReportProps> = ({ result }) => (
+export const PDFReport: React.FC<PDFReportProps> = ({ reportData }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>🛡️ InboxShield Mini Report</Text>
-        <Text style={styles.subtitle}>Email Security Analysis for {result.domain}</Text>
-        <Text style={styles.subtitle}>Generated on {new Date(result.timestamp).toLocaleDateString()}</Text>
+        <Text style={styles.subtitle}>Email Security Analysis for {reportData.domain}</Text>
+        <Text style={styles.subtitle}>Generated on {new Date(reportData.timestamp).toLocaleDateString()}</Text>
       </View>
 
       {/* Overall Score */}
       <View style={styles.scoreSection}>
-        <Text style={[styles.scoreText, { color: getScoreColor(result.overallScore) }]}>
-          Overall Security Score: {result.overallScore}/100
+        <Text style={[styles.scoreText, { color: getScoreColor(reportData.overallScore) }]}>
+          Overall Security Score: {reportData.overallScore}/100
         </Text>
       </View>
 
@@ -146,7 +146,7 @@ export const PDFReport: React.FC<PDFReportProps> = ({ result }) => (
         <Text style={styles.sectionTitle}>SPF (Sender Policy Framework)</Text>
         <View style={styles.checkItem}>
           <View style={styles.checkHeader}>
-            <Text>{getStatusIcon(result.spf.status)}</Text>
+            <Text>{getStatusIcon(reportData.spf.status)}</Text>
             <Text style={styles.checkTitle}>SPF Record Analysis</Text>
           </View>
           <Text style={styles.checkDescription}>

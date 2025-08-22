@@ -7,6 +7,9 @@ import { Footer } from '@/components/Footer';
 
 export default function SuccessPage() {
   const [domain, setDomain] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [reportReady, setReportReady] = useState(false);
+  const [reportData, setReportData] = useState<any>(null);
 
   useEffect(() => {
     // Get the domain from localStorage that was saved before payment
@@ -15,12 +18,83 @@ export default function SuccessPage() {
       setDomain(pendingDomain);
       // Clear it from localStorage
       localStorage.removeItem('pendingDomain');
+      // Automatically generate the report
+      generateReport(pendingDomain);
     }
   }, []);
 
-  const handleDownloadReport = () => {
-    // For now, just show an alert. In production, this would generate the actual report
-    alert('Report generation would happen here! Your domain: ' + (domain || 'unknown'));
+  const generateReport = async (domainName: string) => {
+    setIsGenerating(true);
+    try {
+      console.log('Generating full report for:', domainName);
+      
+      // Generate comprehensive report
+      const response = await fetch('/.netlify/functions/generate-full-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          domain: domainName, 
+          paymentVerified: true 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate report');
+      }
+
+      const result = await response.json();
+      setReportData(result.reportData);
+      setReportReady(true);
+      console.log('Report generated successfully');
+    } catch (error) {
+      console.error('Error generating report:', error);
+      alert('Error generating report: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleDownloadReport = async () => {
+    if (!reportData) {
+      alert('Report not ready yet. Please wait for generation to complete.');
+      return;
+    }
+
+    try {
+      console.log('Downloading PDF report...');
+      
+      // Generate and download PDF
+      const response = await fetch('/.netlify/functions/generate-pdf-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reportData }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+
+      // Create download link
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `inboxshield-${domain}-report.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      console.log('PDF downloaded successfully');
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      alert('Error downloading report: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
   };
 
   return (
@@ -48,9 +122,24 @@ export default function SuccessPage() {
             </p>
             
             {domain && (
-              <p className="text-lg text-blue-400 mb-8">
+              <p className="text-lg text-blue-400 mb-4">
                 Analysis for: <span className="font-bold">{domain}</span>
               </p>
+            )}
+            
+            {/* Report Generation Status */}
+            {isGenerating && (
+              <div className="inline-flex items-center space-x-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full px-4 py-2 mb-8">
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-yellow-400 border-t-transparent"></div>
+                <span className="text-yellow-300 text-sm font-medium">Generating your comprehensive report...</span>
+              </div>
+            )}
+            
+            {reportReady && !isGenerating && (
+              <div className="inline-flex items-center space-x-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-2 mb-8">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                <span className="text-green-300 text-sm font-medium">Report ready for download!</span>
+              </div>
             )}
           </div>
 
@@ -90,13 +179,34 @@ export default function SuccessPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={handleDownloadReport}
-                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+                disabled={!reportReady || isGenerating}
+                className={`${
+                  reportReady && !isGenerating
+                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 hover:scale-105'
+                    : 'bg-gray-600 cursor-not-allowed'
+                } text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform shadow-lg`}
               >
                 <div className="flex items-center justify-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <span>Download Your Report</span>
+                  {isGenerating ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                      <span>Generating Report...</span>
+                    </>
+                  ) : reportReady ? (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>Download Your Report</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Preparing Report...</span>
+                    </>
+                  )}
                 </div>
               </button>
               
