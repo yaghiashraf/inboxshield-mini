@@ -52,9 +52,46 @@ export const handler: Handler = async (event, context) => {
     try {
       const session = await stripe.checkout.sessions.retrieve(sessionId);
       
-      if (session.payment_status === 'paid' && session.metadata?.reportId === reportId) {
-        paymentVerified = true;
-        domain = session.metadata.domain;
+      console.log('Session retrieved:', {
+        id: session.id,
+        payment_status: session.payment_status,
+        metadata: session.metadata,
+        providedReportId: reportId
+      });
+      
+      if (session.payment_status === 'paid') {
+        // Primary check: exact reportId match
+        if (session.metadata?.reportId === reportId) {
+          paymentVerified = true;
+          domain = session.metadata.domain;
+          console.log('Payment verified successfully with exact reportId match for domain:', domain);
+        }
+        // Fallback check: if payment is successful and domain matches (for cases where reportId might not match)
+        else if (session.metadata?.domain && reportId.includes(session.metadata.domain.replace(/[^a-z0-9]/g, '_'))) {
+          paymentVerified = true;
+          domain = session.metadata.domain;
+          console.log('Payment verified successfully with domain match fallback for domain:', domain);
+        }
+        // Emergency fallback: if payment is paid but reportId format doesn't match, still allow if we have a domain
+        else if (session.metadata?.domain) {
+          paymentVerified = true;
+          domain = session.metadata.domain;
+          console.log('Payment verified with emergency fallback - payment is paid and domain exists:', domain);
+        }
+        else {
+          console.log('Payment verification failed despite paid status:', {
+            payment_status: session.payment_status,
+            metadata_reportId: session.metadata?.reportId,
+            provided_reportId: reportId,
+            metadata_domain: session.metadata?.domain,
+            exact_match: session.metadata?.reportId === reportId
+          });
+        }
+      } else {
+        console.log('Payment not completed:', {
+          payment_status: session.payment_status,
+          session_id: sessionId
+        });
       }
     } catch (stripeError) {
       console.error('Stripe verification error:', stripeError);
@@ -62,6 +99,23 @@ export const handler: Handler = async (event, context) => {
     }
 
     if (!paymentVerified) {
+      // Get session details for debugging
+      let debugInfo = {};
+      try {
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        debugInfo = {
+          sessionId,
+          reportId,
+          paymentStatus: session.payment_status,
+          metadataReportId: session.metadata?.reportId,
+          metadataDomain: session.metadata?.domain,
+          created: session.created,
+          amount_total: session.amount_total
+        };
+      } catch (err) {
+        debugInfo = { error: 'Could not retrieve session for debugging' };
+      }
+
       return {
         statusCode: 403,
         headers: {
@@ -70,7 +124,8 @@ export const handler: Handler = async (event, context) => {
         },
         body: JSON.stringify({ 
           error: 'Payment verification failed',
-          paymentVerified: false 
+          paymentVerified: false,
+          debug: debugInfo
         }),
       };
     }

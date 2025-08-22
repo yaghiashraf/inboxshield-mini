@@ -54,6 +54,13 @@ function SuccessContent() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.log('Payment verification error details:', errorData);
+        
+        // If we have debug info, log it for troubleshooting
+        if (errorData.debug) {
+          console.log('Debug info:', errorData.debug);
+        }
+        
         throw new Error(errorData.error || 'Failed to verify payment');
       }
 
