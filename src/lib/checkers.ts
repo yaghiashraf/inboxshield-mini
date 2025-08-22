@@ -17,33 +17,7 @@ import {
 } from './dns-utils';
 
 export async function checkSPF(domain: string, isPreview: boolean = false): Promise<SPFResult> {
-  // For preview mode, provide realistic deterministic results
-  if (isPreview) {
-    // Simulate realistic SPF scenarios based on domain characteristics
-    const majorProviders = ['gmail.com', 'google.com', 'microsoft.com', 'outlook.com', 'office365.com'];
-    const isLikelyMajorProvider = majorProviders.some(provider => 
-      domain.includes(provider.split('.')[0]) || domain.endsWith(provider)
-    );
-    
-    if (isLikelyMajorProvider) {
-      return {
-        status: 'pass',
-        issues: [],
-        recommendations: []
-      };
-    } else {
-      // Most small businesses have basic issues
-      const commonIssues = [
-        domain.length < 10 ? 'SPF record not found' : 'SPF record found but needs optimization',
-      ];
-      
-      return {
-        status: domain.includes('example') || domain.includes('test') ? 'fail' : 'warn',
-        issues: commonIssues,
-        recommendations: []
-      };
-    }
-  }
+  // Always perform real DNS analysis - no more simulation
 
   const result = await lookupTxtRecords(domain);
   
@@ -68,61 +42,35 @@ export async function checkSPF(domain: string, isPreview: boolean = false): Prom
   const recommendations: string[] = [];
 
   if (parsed.lookupCount > 10) {
-    issues.push(isPreview ? 'DNS lookup limit exceeded' : 'SPF record exceeds 10 DNS lookup limit');
-    if (!isPreview) {
-      recommendations.push('Flatten SPF record by replacing includes with IP addresses');
-    }
+    issues.push('SPF record exceeds 10 DNS lookup limit');
+    recommendations.push('Flatten SPF record by replacing includes with IP addresses');
   }
 
   if (parsed.hasSoftFail && !parsed.hasHardFail) {
-    issues.push(isPreview ? 'Weak SPF policy detected' : 'SPF uses soft fail (~all) instead of hard fail (-all)');
-    if (!isPreview) {
-      recommendations.push('Change ~all to -all for stronger protection');
-    }
+    issues.push('SPF uses soft fail (~all) instead of hard fail (-all)');
+    recommendations.push('Change ~all to -all for stronger protection');
   }
 
   if (!parsed.hasHardFail && !parsed.hasSoftFail) {
-    issues.push(isPreview ? 'No fail policy specified' : 'SPF record missing fail policy (all mechanism)');
-    if (!isPreview) {
-      recommendations.push('Add -all at the end of your SPF record');
-    }
+    issues.push('SPF record missing fail policy (all mechanism)');
+    recommendations.push('Add -all at the end of your SPF record');
   }
 
   const status = issues.length === 0 ? 'pass' : (issues.length <= 2 ? 'warn' : 'fail');
 
   return {
     status,
-    record: isPreview ? undefined : spfRecord,
+    record: spfRecord,
     issues,
     recommendations,
-    dnsLookupCount: isPreview ? undefined : parsed.lookupCount,
-    mechanisms: isPreview ? undefined : parsed.mechanisms,
-    suggestedRecord: isPreview ? undefined : generateSPFFix(domain, spfRecord)
+    dnsLookupCount: parsed.lookupCount,
+    mechanisms: parsed.mechanisms,
+    suggestedRecord: generateSPFFix(domain, spfRecord)
   };
 }
 
 export async function checkDMARC(domain: string, isPreview: boolean = false): Promise<DMARCResult> {
-  // For preview mode, provide realistic deterministic results
-  if (isPreview) {
-    const majorProviders = ['gmail.com', 'google.com', 'microsoft.com', 'outlook.com', 'office365.com'];
-    const isLikelyMajorProvider = majorProviders.some(provider => 
-      domain.includes(provider.split('.')[0]) || domain.endsWith(provider)
-    );
-    
-    if (isLikelyMajorProvider) {
-      return {
-        status: 'warn', // Even major providers often start with p=none
-        issues: ['DMARC policy set to monitoring only'],
-        recommendations: []
-      };
-    } else {
-      return {
-        status: 'fail',
-        issues: ['DMARC record not found'],
-        recommendations: []
-      };
-    }
-  }
+  // Always perform real DNS analysis - no more simulation
 
   const result = await lookupTxtRecords(`_dmarc.${domain}`);
   
@@ -147,28 +95,24 @@ export async function checkDMARC(domain: string, isPreview: boolean = false): Pr
   const recommendations: string[] = [];
 
   if (parsed.policy === 'none') {
-    issues.push(isPreview ? 'DMARC policy set to none' : 'DMARC policy is set to none (monitoring only)');
-    if (!isPreview) {
-      recommendations.push('Upgrade to p=quarantine or p=reject for active protection');
-    }
+    issues.push('DMARC policy is set to none (monitoring only)');
+    recommendations.push('Upgrade to p=quarantine or p=reject for active protection');
   }
 
   if (parsed.reportingAddresses.length === 0) {
-    issues.push(isPreview ? 'No reporting configured' : 'No DMARC reporting addresses configured');
-    if (!isPreview) {
-      recommendations.push('Add rua and ruf tags for DMARC reports');
-    }
+    issues.push('No DMARC reporting addresses configured');
+    recommendations.push('Add rua and ruf tags for DMARC reports');
   }
 
   const status = issues.length === 0 ? 'pass' : (parsed.policy === 'none' ? 'warn' : 'fail');
 
   return {
     status,
-    record: isPreview ? undefined : dmarcRecord,
-    policy: isPreview ? undefined : parsed.policy,
+    record: dmarcRecord,
+    policy: parsed.policy,
     issues,
     recommendations,
-    suggestedRecord: isPreview ? undefined : generateDMARCFix(domain, dmarcRecord)
+    suggestedRecord: generateDMARCFix(domain, dmarcRecord)
   };
 }
 
@@ -205,34 +149,7 @@ export async function checkDKIM(domain: string, isPreview: boolean = false): Pro
 
   const validatedSelectors: string[] = [];
   
-  // For preview, provide realistic simulation based on domain
-  if (isPreview) {
-    // Simple deterministic check - major providers likely have DKIM
-    const majorProviders = ['gmail.com', 'google.com', 'microsoft.com', 'outlook.com', 'office365.com'];
-    const isLikelyMajorProvider = majorProviders.some(provider => 
-      domain.includes(provider.split('.')[0]) || domain.endsWith(provider)
-    );
-    
-    if (isLikelyMajorProvider) {
-      return {
-        status: 'pass',
-        commonSelectors,
-        validatedSelectors: ['google'],
-        issues: [],
-        recommendations: [],
-        providerGuidance
-      };
-    } else {
-      return {
-        status: 'warn',
-        commonSelectors,
-        validatedSelectors: [],
-        issues: ['DKIM records not found for common selectors'],
-        recommendations: [],
-        providerGuidance
-      };
-    }
-  }
+  // Always perform real DKIM analysis - no more simulation
 
   // Check common DKIM selectors
   for (const selector of commonSelectors) {
@@ -277,8 +194,8 @@ export async function checkBIMI(domain: string, isPreview: boolean = false): Pro
   if (!bimiRecord) {
     return {
       status: 'warn',
-      issues: isPreview ? ['BIMI record not found'] : ['No BIMI record found (optional for brand logos)'],
-      recommendations: isPreview ? [] : [
+      issues: ['No BIMI record found (optional for brand logos)'],
+      recommendations: [
         'BIMI is optional but helps display your logo in supported email clients',
         'Requires DMARC with p=quarantine or p=reject policy'
       ]
@@ -292,7 +209,7 @@ export async function checkBIMI(domain: string, isPreview: boolean = false): Pro
   const logoUrlMatch = bimiRecord.match(/l=([^;]+)/);
   const logoUrl = logoUrlMatch ? logoUrlMatch[1].trim() : undefined;
 
-  if (logoUrl && !isPreview) {
+  if (logoUrl) {
     // Validate logo URL
     const logoResponse = await fetchHttpContent(logoUrl);
     if (logoResponse.error) {
@@ -305,8 +222,8 @@ export async function checkBIMI(domain: string, isPreview: boolean = false): Pro
 
   return {
     status,
-    record: isPreview ? undefined : bimiRecord,
-    logoUrl: isPreview ? undefined : logoUrl,
+    record: bimiRecord,
+    logoUrl: logoUrl,
     issues,
     recommendations
   };
@@ -322,8 +239,8 @@ export async function checkMTASTS(domain: string, isPreview: boolean = false): P
   if (!mtaStsRecord) {
     return {
       status: 'warn',
-      issues: isPreview ? ['MTA-STS record not found'] : ['No MTA-STS record found (optional security enhancement)'],
-      recommendations: isPreview ? [] : [
+      issues: ['No MTA-STS record found (optional security enhancement)'],
+      recommendations: [
         'MTA-STS is optional but provides additional email security',
         'Requires hosting a policy file at https://mta-sts.yourdomain.com/.well-known/mta-sts.txt'
       ]
@@ -333,20 +250,18 @@ export async function checkMTASTS(domain: string, isPreview: boolean = false): P
   const issues: string[] = [];
   const recommendations: string[] = [];
 
-  if (!isPreview) {
-    // Try to fetch the MTA-STS policy file
-    const policyUrl = `https://mta-sts.${domain}/.well-known/mta-sts.txt`;
-    const policyResponse = await fetchHttpContent(policyUrl);
-    
-    if (policyResponse.error) {
-      issues.push('MTA-STS policy file is not accessible');
-      recommendations.push('Host your MTA-STS policy file at the required location');
-    } else {
-      // Basic policy validation
-      if (!policyResponse.content.includes('version: STSv1')) {
-        issues.push('MTA-STS policy file format is invalid');
-        recommendations.push('Ensure your policy file follows the correct format');
-      }
+  // Try to fetch the MTA-STS policy file
+  const policyUrl = `https://mta-sts.${domain}/.well-known/mta-sts.txt`;
+  const policyResponse = await fetchHttpContent(policyUrl);
+  
+  if (policyResponse.error) {
+    issues.push('MTA-STS policy file is not accessible');
+    recommendations.push('Host your MTA-STS policy file at the required location');
+  } else {
+    // Basic policy validation
+    if (!policyResponse.content.includes('version: STSv1')) {
+      issues.push('MTA-STS policy file format is invalid');
+      recommendations.push('Ensure your policy file follows the correct format');
     }
   }
 
@@ -354,8 +269,8 @@ export async function checkMTASTS(domain: string, isPreview: boolean = false): P
 
   return {
     status,
-    record: isPreview ? undefined : mtaStsRecord,
-    policyContent: isPreview ? undefined : undefined, // Would include policy content in full version
+    record: mtaStsRecord,
+    policyContent: policyResponse.error ? undefined : policyResponse.content,
     issues,
     recommendations
   };

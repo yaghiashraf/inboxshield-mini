@@ -34,9 +34,11 @@ export function PreviewResults({ result }: PreviewResultsProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <div className="inline-flex items-center space-x-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-4">
-          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-          <span className="text-blue-300 text-sm font-medium">Analysis Complete</span>
+        <div className="inline-flex items-center space-x-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-2 mb-4">
+          <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="text-green-300 text-sm font-medium">Live DNS Analysis Complete</span>
         </div>
         <h2 className="text-2xl font-bold text-white mb-3">
           Email Security Results for <span className="text-blue-400">{result.domain}</span>

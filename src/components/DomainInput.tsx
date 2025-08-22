@@ -37,17 +37,17 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
       <div className="text-center mb-6">
         <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
           <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Email Security Analysis
+            Real DNS Email Security Analysis
           </span>
         </h2>
         <p className="text-gray-300">
-          Enter your domain to get instant email authentication analysis
+          Enter your domain for live DNS analysis of your actual email authentication records
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="domain" className="block text-sm font-medium text-gray-300 mb-3">
-              Enter your domain name for instant analysis
+              Enter your domain name for live DNS security analysis
             </label>
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
@@ -128,7 +128,7 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Get Free Security Scan
+                  Analyze Real DNS Records
                 </span>
               )}
             </span>
@@ -156,7 +156,7 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span className="text-sm text-gray-300">
-              Free preview • Full report with fixes only 
+              Real DNS analysis • Full report with fixes only 
             </span>
             <span className="font-bold text-blue-400">$11.99</span>
           </div>
