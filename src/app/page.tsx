@@ -331,50 +331,116 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              How It <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Works</span>
+              How <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">InboxShield</span> Works
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Three simple steps to perfect email deliverability
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+              Stop your business emails from going to spam in three simple steps
             </p>
+            <div className="inline-flex items-center space-x-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-2">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <span className="text-green-300 text-sm font-medium">Takes less than 5 minutes</span>
+            </div>
           </div>
 
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <div className="relative">
               {/* Progress Line */}
-              <div className="absolute top-8 left-8 right-8 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 hidden md:block"></div>
+              <div className="absolute top-12 left-12 right-12 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 hidden md:block rounded-full opacity-30"></div>
               
               <div className="grid md:grid-cols-3 gap-8">
                 {/* Step 1 */}
-                <div className="relative text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-6 relative z-10">
-                    1
+                <div className="relative">
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300 h-full">
+                    <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-6 relative z-10 shadow-lg shadow-blue-500/25">
+                      1
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-white mb-4">🔍 Check Your Domain</h3>
+                      <p className="text-gray-300 leading-relaxed mb-6">
+                        Enter your business domain (like yourcompany.com) and we'll instantly scan your email security settings.
+                      </p>
+                      <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+                        <p className="text-blue-300 text-sm font-medium">
+                          ⚡ Results in 10 seconds
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">Enter Your Domain</h3>
-                  <p className="text-gray-300">
-                    Type your domain and get instant analysis of SPF, DKIM, DMARC, BIMI, and MTA-STS records in under 10 seconds.
-                  </p>
                 </div>
 
                 {/* Step 2 */}
-                <div className="relative text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-6 relative z-10">
-                    2
+                <div className="relative">
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-purple-500/50 transition-all duration-300 h-full">
+                    <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-6 relative z-10 shadow-lg shadow-purple-500/25">
+                      2
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-white mb-4">💳 Get Your Fixes</h3>
+                      <p className="text-gray-300 leading-relaxed mb-6">
+                        Pay $11.99 once and receive exact DNS records to copy-paste, plus step-by-step instructions for your provider.
+                      </p>
+                      <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+                        <p className="text-purple-300 text-sm font-medium">
+                          💾 Copy-paste ready fixes
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">Get Your Fixes</h3>
-                  <p className="text-gray-300">
-                    Receive exact DNS records to copy-paste, detailed explanations, and step-by-step instructions for your DNS provider.
-                  </p>
                 </div>
 
                 {/* Step 3 */}
-                <div className="relative text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-6 relative z-10">
-                    3
+                <div className="relative">
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-green-500/50 transition-all duration-300 h-full">
+                    <div className="w-20 h-20 bg-gradient-to-r from-pink-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-6 relative z-10 shadow-lg shadow-green-500/25">
+                      3
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-white mb-4">📈 See Results</h3>
+                      <p className="text-gray-300 leading-relaxed mb-6">
+                        Paste the DNS records into your domain settings and watch your emails start reaching inboxes instead of spam.
+                      </p>
+                      <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+                        <p className="text-green-300 text-sm font-medium">
+                          ✅ 95%+ inbox delivery rate
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">Watch Results</h3>
-                  <p className="text-gray-300">
-                    Paste the DNS records into your provider and see immediate improvements in email deliverability and inbox placement.
-                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* What You Get */}
+            <div className="mt-16 bg-gradient-to-r from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-8">
+              <h3 className="text-2xl font-bold text-white text-center mb-8">What You Get For $11.99</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-green-400 text-xl">✓</span>
+                    <span className="text-gray-300">Complete email security analysis (SPF, DKIM, DMARC, BIMI, MTA-STS)</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-green-400 text-xl">✓</span>
+                    <span className="text-gray-300">Exact DNS records formatted for copy-paste</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-green-400 text-xl">✓</span>
+                    <span className="text-gray-300">Professional PDF report you can share with your team</span>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-green-400 text-xl">✓</span>
+                    <span className="text-gray-300">Step-by-step setup guides for GoDaddy, Cloudflare, Namecheap</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-green-400 text-xl">✓</span>
+                    <span className="text-gray-300">Priority explanations of each issue and business impact</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-green-400 text-xl">✓</span>
+                    <span className="text-gray-300">Verification steps to confirm your fixes are working</span>
+                  </div>
                 </div>
               </div>
             </div>

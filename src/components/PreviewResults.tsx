@@ -1,17 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
 import { DomainCheckResult } from '@/types';
 
 interface PreviewResultsProps {
   result: DomainCheckResult;
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
-
 export function PreviewResults({ result }: PreviewResultsProps) {
-  const [isLoading, setIsLoading] = useState(false);
   const getStatusIcon = (status: 'pass' | 'warn' | 'fail') => {
     switch (status) {
       case 'pass': return '✅';
@@ -28,65 +23,12 @@ export function PreviewResults({ result }: PreviewResultsProps) {
     }
   };
 
-  const handlePurchaseReport = async () => {
-    setIsLoading(true);
+  const handlePurchaseReport = () => {
+    // Store domain in localStorage for after payment completion
+    localStorage.setItem('pendingDomain', result.domain);
     
-    try {
-      console.log('Starting checkout process for domain:', result.domain);
-      
-      // Check if Stripe keys are configured
-      if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY.includes('REPLACE')) {
-        throw new Error('Stripe keys not configured. Please add your Stripe test keys to .env.local file.');
-      }
-
-      // Create checkout session
-      const response = await fetch('/.netlify/functions/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ domain: result.domain }),
-      });
-
-      console.log('Checkout session response status:', response.status);
-
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error('Server response:', errorData);
-        throw new Error(`Server error (${response.status}): ${errorData}`);
-      }
-
-      const responseData = await response.json();
-      console.log('Checkout session data:', responseData);
-
-      if (!responseData.sessionId) {
-        throw new Error('No session ID received from server');
-      }
-
-      const stripe = await stripePromise;
-
-      if (!stripe) {
-        throw new Error('Stripe failed to load - check your publishable key');
-      }
-
-      console.log('Redirecting to Stripe checkout...');
-      
-      // Redirect to Stripe checkout
-      const { error } = await stripe.redirectToCheckout({
-        sessionId: responseData.sessionId,
-      });
-
-      if (error) {
-        console.error('Stripe checkout error:', error);
-        alert(`Stripe checkout error: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error initiating payment:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      alert(`Payment Error: ${errorMessage}\n\nCheck the browser console for more details.`);
-    } finally {
-      setIsLoading(false);
-    }
+    // Redirect directly to Stripe buy link
+    window.location.href = 'https://buy.stripe.com/5kQ8wO7Uf6phgCy71zg3601';
   };
 
   return (
@@ -415,31 +357,15 @@ export function PreviewResults({ result }: PreviewResultsProps) {
           
           <button
             onClick={handlePurchaseReport}
-            disabled={isLoading}
-            className={`relative overflow-hidden group w-full md:w-auto ${
-              isLoading 
-                ? 'bg-gray-600 cursor-not-allowed'
-                : 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 hover:scale-105'
-            } text-white font-bold py-5 px-12 rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform`}
+            className="relative overflow-hidden group w-full md:w-auto bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 hover:scale-105 text-white font-bold py-5 px-12 rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform"
           >
             <span className="relative z-10 flex items-center justify-center gap-3">
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
-                  <span className="text-lg">Processing...</span>
-                </>
-              ) : (
-                <>
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <span className="text-xl">Get Complete Fix Guide - Only $11.99</span>
-                </>
-              )}
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="text-xl">Get Complete Fix Guide - Only $11.99</span>
             </span>
-            {!isLoading && (
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-            )}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
           </button>
           
           <div className="mt-4 text-sm text-gray-400">

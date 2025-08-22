@@ -34,9 +34,6 @@ export function Header() {
             <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">
               How It Works
             </a>
-            <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors">
-              Privacy
-            </Link>
           </nav>
 
           {/* CTA Button */}
