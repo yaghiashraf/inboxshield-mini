@@ -350,16 +350,16 @@ export default function Home() {
               <div className="grid md:grid-cols-3 gap-8">
                 {/* Step 1 */}
                 <div className="relative">
-                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300 h-full">
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300 flex flex-col h-full">
                     <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-6 relative z-10 shadow-lg shadow-blue-500/25">
                       1
                     </div>
-                    <div className="text-center">
+                    <div className="text-center flex flex-col flex-1">
                       <h3 className="text-2xl font-bold text-white mb-4">🔍 Check Your Domain</h3>
-                      <p className="text-gray-300 leading-relaxed mb-6">
+                      <p className="text-gray-300 leading-relaxed mb-6 flex-1 min-h-[4.5rem]">
                         Enter your business domain (like yourcompany.com) and we'll instantly scan your email security settings.
                       </p>
-                      <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+                      <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4 mt-auto">
                         <p className="text-blue-300 text-sm font-medium">
                           ⚡ Results in 10 seconds
                         </p>
@@ -370,16 +370,16 @@ export default function Home() {
 
                 {/* Step 2 */}
                 <div className="relative">
-                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-purple-500/50 transition-all duration-300 h-full">
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-purple-500/50 transition-all duration-300 flex flex-col h-full">
                     <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-6 relative z-10 shadow-lg shadow-purple-500/25">
                       2
                     </div>
-                    <div className="text-center">
+                    <div className="text-center flex flex-col flex-1">
                       <h3 className="text-2xl font-bold text-white mb-4">💳 Get Your Fixes</h3>
-                      <p className="text-gray-300 leading-relaxed mb-6">
+                      <p className="text-gray-300 leading-relaxed mb-6 flex-1 min-h-[4.5rem]">
                         Pay $11.99 once and receive exact DNS records to copy-paste, plus step-by-step instructions for your provider.
                       </p>
-                      <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+                      <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4 mt-auto">
                         <p className="text-purple-300 text-sm font-medium">
                           💾 Copy-paste ready fixes
                         </p>
@@ -390,16 +390,16 @@ export default function Home() {
 
                 {/* Step 3 */}
                 <div className="relative">
-                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-green-500/50 transition-all duration-300 h-full">
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:border-green-500/50 transition-all duration-300 flex flex-col h-full">
                     <div className="w-20 h-20 bg-gradient-to-r from-pink-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-6 relative z-10 shadow-lg shadow-green-500/25">
                       3
                     </div>
-                    <div className="text-center">
+                    <div className="text-center flex flex-col flex-1">
                       <h3 className="text-2xl font-bold text-white mb-4">📈 See Results</h3>
-                      <p className="text-gray-300 leading-relaxed mb-6">
+                      <p className="text-gray-300 leading-relaxed mb-6 flex-1 min-h-[4.5rem]">
                         Paste the DNS records into your domain settings and watch your emails start reaching inboxes instead of spam.
                       </p>
-                      <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+                      <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4 mt-auto">
                         <p className="text-green-300 text-sm font-medium">
                           ✅ 95%+ inbox delivery rate
                         </p>
