@@ -88,7 +88,7 @@ export const handler: Handler = async (event, context) => {
         },
       ],
       mode: 'payment',
-      success_url: `${appUrl}/report/${reportId}?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}&report_id=${reportId}`,
       cancel_url: `${appUrl}/?cancelled=true`,
       metadata: {
         domain: domain.toLowerCase(),
