@@ -99,40 +99,23 @@ export default function ReportPage() {
       
       console.log('Extracted domain:', domain);
       
-      // For development: create mock report data since Netlify functions aren't working in dev mode
-      // In production, this would fetch real DNS analysis
-      const mockReport = {
-        domain: domain,
-        timestamp: new Date().toISOString(),
-        overallScore: 25, // Low score to show issues
-        spf: {
-          status: 'fail' as const,
-          issues: ['No SPF record found for domain'],
-          recommendations: ['Add an SPF record to authorize email senders']
+      // Generate real DNS analysis report using check-full endpoint
+      const response = await fetch('/.netlify/functions/check-full', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        dmarc: {
-          status: 'fail' as const,
-          issues: ['No DMARC record found for domain'],
-          recommendations: ['Configure DMARC policy to protect against spoofing']
-        },
-        dkim: {
-          status: 'fail' as const,
-          issues: ['No DKIM signature detected'],
-          recommendations: ['Enable DKIM signing through your email provider']
-        },
-        bimi: {
-          status: 'fail' as const,
-          issues: ['No BIMI record found'],
-          recommendations: ['Add BIMI record to display logo in emails']
-        },
-        mtaSts: {
-          status: 'fail' as const,
-          issues: ['No MTA-STS policy found'],
-          recommendations: ['Implement MTA-STS for secure email transport']
-        }
-      };
+        body: JSON.stringify({ 
+          domain: domain
+        }),
+      });
 
-      setReport(mockReport);
+      if (!response.ok) {
+        throw new Error('Failed to generate report');
+      }
+
+      const result = await response.json();
+      setReport(result);
       setPaymentVerified(true);
       console.log('Report generated successfully from payment link');
     } catch (err) {

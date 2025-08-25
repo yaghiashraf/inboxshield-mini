@@ -186,45 +186,29 @@ function SuccessContent() {
       // Create a unique report ID for payment link flow
       const paymentLinkReportId = `report_${domainName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
       
-      // For now, create a mock comprehensive report since Netlify functions aren't working in dev mode
-      // In production, this would use the actual DNS analysis
-      const mockReport = {
-        domain: domainName,
-        timestamp: new Date().toISOString(),
-        overallScore: 25, // Low score to trigger the flow
-        spf: {
-          status: 'fail' as const,
-          issues: ['No SPF record found for domain'],
-          recommendations: ['Add an SPF record to authorize email senders']
+      // Generate real DNS analysis report using check-full endpoint
+      const response = await fetch('/.netlify/functions/check-full', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        dmarc: {
-          status: 'fail' as const,
-          issues: ['No DMARC record found for domain'],
-          recommendations: ['Configure DMARC policy to protect against spoofing']
-        },
-        dkim: {
-          status: 'fail' as const,
-          issues: ['No DKIM signature detected'],
-          recommendations: ['Enable DKIM signing through your email provider']
-        },
-        bimi: {
-          status: 'fail' as const,
-          issues: ['No BIMI record found'],
-          recommendations: ['Add BIMI record to display logo in emails']
-        },
-        mtaSts: {
-          status: 'fail' as const,
-          issues: ['No MTA-STS policy found'],
-          recommendations: ['Implement MTA-STS for secure email transport']
-        }
-      };
+        body: JSON.stringify({ 
+          domain: domainName
+        }),
+      });
 
-      setReportData(mockReport);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setReportData(result);
       setDomain(domainName);
       setActualReportId(paymentLinkReportId);
       setReportReady(true);
       setPaymentVerified(true); // Set payment as verified since user came from payment link
-      console.log('Report generated successfully (mock data for development)');
+      console.log('Report generated successfully');
     } catch (error) {
       console.error('Error generating report:', error);
       setError(error instanceof Error ? error.message : 'Failed to generate report');
