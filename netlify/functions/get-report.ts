@@ -34,20 +34,21 @@ export const handler: Handler = async (event, context) => {
   try {
     const { reportId, sessionId } = JSON.parse(event.body || '{}');
 
-    if (!reportId || !sessionId) {
+    if (!sessionId) {
       return {
         statusCode: 400,
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ error: 'Missing reportId or sessionId' }),
+        body: JSON.stringify({ error: 'Missing sessionId' }),
       };
     }
 
     // Verify the payment session
     let paymentVerified = false;
     let domain = '';
+    let sessionReportId = '';
 
     try {
       const session = await stripe.checkout.sessions.retrieve(sessionId);
@@ -60,31 +61,18 @@ export const handler: Handler = async (event, context) => {
       });
       
       if (session.payment_status === 'paid') {
-        // Primary check: exact reportId match
-        if (session.metadata?.reportId === reportId) {
+        // Get reportId and domain from session metadata
+        if (session.metadata?.domain && session.metadata?.reportId) {
           paymentVerified = true;
           domain = session.metadata.domain;
-          console.log('Payment verified successfully with exact reportId match for domain:', domain);
-        }
-        // Fallback check: if payment is successful and domain matches (for cases where reportId might not match)
-        else if (session.metadata?.domain && reportId.includes(session.metadata.domain.replace(/[^a-z0-9]/g, '_'))) {
-          paymentVerified = true;
-          domain = session.metadata.domain;
-          console.log('Payment verified successfully with domain match fallback for domain:', domain);
-        }
-        // Emergency fallback: if payment is paid but reportId format doesn't match, still allow if we have a domain
-        else if (session.metadata?.domain) {
-          paymentVerified = true;
-          domain = session.metadata.domain;
-          console.log('Payment verified with emergency fallback - payment is paid and domain exists:', domain);
+          sessionReportId = session.metadata.reportId;
+          console.log('Payment verified successfully for domain:', domain, 'reportId:', sessionReportId);
         }
         else {
-          console.log('Payment verification failed despite paid status:', {
+          console.log('Payment verification failed - missing metadata:', {
             payment_status: session.payment_status,
             metadata_reportId: session.metadata?.reportId,
-            provided_reportId: reportId,
-            metadata_domain: session.metadata?.domain,
-            exact_match: session.metadata?.reportId === reportId
+            metadata_domain: session.metadata?.domain
           });
         }
       } else {
@@ -122,6 +110,7 @@ export const handler: Handler = async (event, context) => {
           console.log('🚨 EMERGENCY OVERRIDE: Payment is clearly successful, allowing report generation');
           paymentVerified = true;
           domain = session.metadata.domain;
+          sessionReportId = session.metadata?.reportId || `report_${domain.replace(/[^a-z0-9]/g, '_')}_${session.created}`;
           emergencyOverride = true;
         }
       } catch (err) {
@@ -157,6 +146,7 @@ export const handler: Handler = async (event, context) => {
         reportData,
         paymentVerified: true,
         domain,
+        reportId: sessionReportId,
       }),
     };
 

@@ -30,6 +30,15 @@ export default function ReportPage() {
 
   const verifyPaymentAndGetReport = async () => {
     try {
+      console.log('Fetching report for:', { reportId, sessionId });
+      
+      // If we don't have a sessionId, this is likely a saved report link
+      if (!sessionId) {
+        setError('This report link requires a valid payment session. Please complete a new scan and payment.');
+        setIsLoading(false);
+        return;
+      }
+      
       // Verify payment and get report data
       const response = await fetch('/.netlify/functions/get-report', {
         method: 'POST',
@@ -37,17 +46,28 @@ export default function ReportPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          reportId,
+          reportId: reportId || '', // Pass reportId, will be overridden by session metadata
           sessionId 
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to fetch report');
+        console.error('Report fetch error:', errorData);
+        
+        // More specific error messages
+        if (response.status === 403) {
+          throw new Error('Payment verification failed. Please ensure you completed the payment process.');
+        } else if (response.status === 400) {
+          throw new Error('Invalid request. Please try scanning your domain again.');
+        } else {
+          throw new Error(errorData.error || 'Failed to fetch report');
+        }
       }
 
       const data = await response.json();
+      console.log('Report data received:', data);
+      
       setReport(data.reportData);
       setPaymentVerified(data.paymentVerified);
     } catch (err) {
@@ -62,14 +82,13 @@ export default function ReportPage() {
     if (!report) return;
 
     try {
-      const response = await fetch('/api/generate-pdf', {
+      const response = await fetch('/.netlify/functions/generate-pdf-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          domain: report.domain, 
-          reportId 
+          reportData: report
         }),
       });
 

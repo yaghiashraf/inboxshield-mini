@@ -13,14 +13,15 @@ function SuccessContent() {
   const [reportData, setReportData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [paymentVerified, setPaymentVerified] = useState(false);
+  const [actualReportId, setActualReportId] = useState<string | null>(null);
   
   const searchParams = useSearchParams();
   const router = useRouter();
   const sessionId = searchParams?.get('session_id');
-  const reportId = searchParams?.get('report_id');
+  const reportId = searchParams?.get('report_id'); // This might be null now, we'll get it from metadata
 
   useEffect(() => {
-    if (sessionId && reportId) {
+    if (sessionId) {
       verifyPaymentAndGenerateReport();
     } else {
       // Fallback to localStorage method
@@ -47,7 +48,7 @@ function SuccessContent() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          reportId,
+          reportId: reportId || '', // reportId might be null from URL, will be retrieved from session
           sessionId 
         }),
       });
@@ -72,8 +73,12 @@ function SuccessContent() {
 
       setPaymentVerified(true);
       setReportData(data.reportData);
-      setDomain(data.reportData?.domain);
+      setDomain(data.reportData?.domain || data.domain);
       setReportReady(true);
+      
+      // Update the reportId state with the one from session metadata
+      const sessionReportId = data.reportId;
+      setActualReportId(sessionReportId);
       
       console.log('Payment verified and report generated successfully');
     } catch (err) {
@@ -99,7 +104,9 @@ function SuccessContent() {
               console.log('💡 Session is paid, attempting to generate report anyway...');
               setPaymentVerified(true);
               const domain = debugData.session.metadata.domain;
+              const sessionReportId = debugData.session.metadata?.reportId || `report_${domain.replace(/[^a-z0-9]/g, '_')}_${debugData.session.created}`;
               setDomain(domain);
+              setActualReportId(sessionReportId);
               await generateReport(domain);
               return;
             }
@@ -215,9 +222,9 @@ function SuccessContent() {
   }
 
   // Redirect to report page when ready
-  if (reportReady && reportId) {
+  if (reportReady && actualReportId) {
     setTimeout(() => {
-      router.push(`/report/${reportId}?session_id=${sessionId}`);
+      router.push(`/report/${actualReportId}?session_id=${sessionId}`);
     }, 3000); // 3-second delay to show success message
   }
 
@@ -328,7 +335,7 @@ function SuccessContent() {
               {/* Manual Continue Button */}
               <div className="flex justify-center">
                 <button
-                  onClick={() => router.push(`/report/${reportId}?session_id=${sessionId}`)}
+                  onClick={() => router.push(`/report/${actualReportId}?session_id=${sessionId}`)}
                   className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   <div className="flex items-center justify-center gap-2">

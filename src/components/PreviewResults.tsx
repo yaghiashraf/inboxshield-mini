@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { DomainCheckResult } from '@/types';
 
 interface PreviewResultsProps {
@@ -7,6 +8,8 @@ interface PreviewResultsProps {
 }
 
 export function PreviewResults({ result }: PreviewResultsProps) {
+  const [showDetails, setShowDetails] = useState(false);
+  
   const getStatusIcon = (status: 'pass' | 'warn' | 'fail') => {
     switch (status) {
       case 'pass': return '✅';
@@ -23,12 +26,39 @@ export function PreviewResults({ result }: PreviewResultsProps) {
     }
   };
 
-  const handlePurchaseReport = () => {
-    // Store domain in localStorage for after payment completion
-    localStorage.setItem('pendingDomain', result.domain);
-    
-    // Redirect directly to Stripe buy link
-    window.location.href = 'https://buy.stripe.com/5kQ8wO7Uf6phgCy71zg3601';
+  const handlePurchaseReport = async () => {
+    try {
+      // Store domain in localStorage for fallback
+      localStorage.setItem('pendingDomain', result.domain);
+      
+      // Create checkout session
+      const response = await fetch('/.netlify/functions/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ domain: result.domain }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { sessionId } = await response.json();
+      
+      // Redirect to Stripe checkout
+      const stripe = (await import('@stripe/stripe-js')).loadStripe(
+        process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!
+      );
+      
+      const stripeInstance = await stripe;
+      if (stripeInstance) {
+        await stripeInstance.redirectToCheckout({ sessionId });
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Sorry, there was an error processing your payment. Please try again.');
+    }
   };
 
   return (
@@ -55,18 +85,96 @@ export function PreviewResults({ result }: PreviewResultsProps) {
         
         {result.overallScore < 80 && (
           <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-6 mb-6 text-left">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">⚠️</span>
-              <h3 className="text-xl font-bold text-red-300">Your emails are going to spam!</h3>
+              <div>
+                <h3 className="text-xl font-bold text-red-300">Critical Issues Found!</h3>
+                <p className="text-red-200 text-sm">Your emails are going to spam folders</p>
+              </div>
             </div>
-            <p className="text-red-200 text-base leading-relaxed">
+            <p className="text-red-200 text-base leading-relaxed mb-6">
               Your email setup scored {result.overallScore}/100, which means most of your important business emails 
-              are likely ending up in spam folders instead of your customers' inboxes. This is costing you sales and damaging your reputation.
+              are likely ending up in spam folders instead of your customers' inboxes.
             </p>
+            
+            {/* PROMINENT CTA BUTTON - RIGHT AFTER THE PROBLEM */}
+            <div className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-blue-500/40 rounded-xl p-6">
+              <div className="text-center">
+                <h4 className="text-white font-bold text-lg mb-2">Fix These Issues Now</h4>
+                <p className="text-gray-300 text-sm mb-4">Get exact DNS records + copy-paste fixes in under 60 seconds</p>
+                
+                <button
+                  onClick={handlePurchaseReport}
+                  className="relative overflow-hidden group w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 hover:scale-105 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform"
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-3">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span className="text-lg">Get Complete Fix Guide - $11.99</span>
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                </button>
+                
+                <div className="mt-3 text-xs text-gray-400">
+                  ⚡ Instant access • 💾 Copy-paste DNS records • 🔒 One-time payment
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
+      {/* Quick Issues Summary */}
+      <div className="bg-gray-800/50 border border-gray-600/50 rounded-xl p-6 mb-6">
+        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <span>📋</span>
+          Issues Found Summary
+        </h3>
+        
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className={`text-center p-3 rounded-lg border ${getStatusColor(result.spf.status)}`}>
+            <div className="text-2xl mb-1">{getStatusIcon(result.spf.status)}</div>
+            <div className="text-xs font-medium">SPF</div>
+          </div>
+          <div className={`text-center p-3 rounded-lg border ${getStatusColor(result.dmarc.status)}`}>
+            <div className="text-2xl mb-1">{getStatusIcon(result.dmarc.status)}</div>
+            <div className="text-xs font-medium">DMARC</div>
+          </div>
+          <div className={`text-center p-3 rounded-lg border ${getStatusColor(result.dkim.status)}`}>
+            <div className="text-2xl mb-1">{getStatusIcon(result.dkim.status)}</div>
+            <div className="text-xs font-medium">DKIM</div>
+          </div>
+          <div className={`text-center p-3 rounded-lg border ${getStatusColor(result.bimi.status)}`}>
+            <div className="text-2xl mb-1">{getStatusIcon(result.bimi.status)}</div>
+            <div className="text-xs font-medium">BIMI</div>
+          </div>
+          <div className={`text-center p-3 rounded-lg border ${getStatusColor(result.mtaSts.status)}`}>
+            <div className="text-2xl mb-1">{getStatusIcon(result.mtaSts.status)}</div>
+            <div className="text-xs font-medium">MTA-STS</div>
+          </div>
+        </div>
+        
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="text-blue-400 hover:text-blue-300 font-medium text-sm flex items-center gap-2 transition-colors"
+          >
+            {showDetails ? 'Hide' : 'Show'} Detailed Analysis
+            <svg 
+              className={`w-4 h-4 transition-transform ${showDetails ? 'rotate-180' : ''}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Detailed Results - Collapsible */}
+      {showDetails && (
       <div className="space-y-4">
         {/* SPF Section */}
         <div className={`p-6 rounded-xl border backdrop-blur-sm ${getStatusColor(result.spf.status)}`}>
@@ -272,6 +380,7 @@ export function PreviewResults({ result }: PreviewResultsProps) {
           </div>
         </div>
       </div>
+      )}
 
       {/* Summary and Next Steps */}
       <div className="mt-8 p-6 bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-green-900/30 border border-gray-600/50 rounded-xl">
