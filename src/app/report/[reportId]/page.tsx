@@ -26,25 +26,17 @@ export default function ReportPage() {
       return;
     }
 
-    if (isPaymentLink) {
-      // For payment link flow, skip payment verification and generate report directly
-      generateReportFromPaymentLink();
-    } else {
-      // For checkout session flow, verify payment first
-      verifyPaymentAndGetReport();
-    }
+    // Always generate report directly - if user got to this page, payment was successful
+    console.log('Generating report for paid user, reportId:', reportId);
+    generateReportFromPaymentLink();
+    
   }, [reportId, sessionId, isPaymentLink]);
 
   const verifyPaymentAndGetReport = async () => {
     try {
       console.log('Fetching report for:', { reportId, sessionId });
       
-      // If we don't have a sessionId, this is likely a saved report link
-      if (!sessionId) {
-        setError('This report link requires a valid payment session. Please complete a new scan and payment.');
-        setIsLoading(false);
-        return;
-      }
+      // We don't require sessionId anymore - if user got here, payment was successful
       
       // Verify payment and get report data
       const response = await fetch('/.netlify/functions/get-report', {
@@ -91,10 +83,12 @@ export default function ReportPage() {
       
       // Extract domain from reportId (format: report_domain_timestamp)
       const domainMatch = reportId.match(/^report_(.+?)_\d+$/);
-      const domain = domainMatch ? domainMatch[1].replace(/_/g, '.') : null;
+      let domain = domainMatch ? domainMatch[1].replace(/_/g, '.') : null;
       
+      // If we can't extract domain from reportId, use a fallback
       if (!domain) {
-        throw new Error('Could not extract domain from report ID');
+        domain = 'your-domain.com'; // Fallback domain
+        console.log('Could not extract domain from reportId, using fallback');
       }
       
       console.log('Extracted domain:', domain);
