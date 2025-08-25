@@ -103,15 +103,24 @@ export const handler: Handler = async (event, context) => {
           amount_total: session.amount_total
         };
         
-        // Emergency override: if session is clearly paid with valid amount and has domain, allow it
+        // Emergency override: if session is clearly paid with valid amount, allow it
+        // Payment links may not have metadata, so we need to be more flexible
         if (session.payment_status === 'paid' && 
-            session.amount_total && session.amount_total > 0 && 
-            session.metadata?.domain) {
+            session.amount_total && session.amount_total > 0) {
           console.log('🚨 EMERGENCY OVERRIDE: Payment is clearly successful, allowing report generation');
           paymentVerified = true;
-          domain = session.metadata.domain;
-          sessionReportId = session.metadata?.reportId || `report_${domain.replace(/[^a-z0-9]/g, '_')}_${session.created}`;
+          
+          // Try to get domain from metadata, otherwise extract from reportId
+          domain = session.metadata?.domain;
+          if (!domain && reportId) {
+            const domainMatch = reportId.match(/^report_(.+?)_\d+$/);
+            domain = domainMatch ? domainMatch[1].replace(/_/g, '.') : 'unknown-domain';
+          }
+          
+          sessionReportId = session.metadata?.reportId || reportId || `report_${domain.replace(/[^a-z0-9]/g, '_')}_${session.created}`;
           emergencyOverride = true;
+          
+          console.log('Emergency override details:', { domain, sessionReportId, reportId });
         }
       } catch (err) {
         debugInfo = { error: 'Could not retrieve session for debugging' };

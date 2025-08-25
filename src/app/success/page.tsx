@@ -21,14 +21,22 @@ function SuccessContent() {
   const reportId = searchParams?.get('report_id'); // This might be null now, we'll get it from metadata
 
   useEffect(() => {
-    // For payment link flow, we primarily use localStorage
     const pendingDomain = localStorage.getItem('pendingDomain');
     
     if (sessionId) {
-      // If we have a session ID (from checkout API), use the original flow
-      verifyPaymentAndGenerateReport();
+      // We have a session ID - this could be from payment link or checkout API
+      console.log('Session ID detected:', sessionId);
+      
+      if (pendingDomain) {
+        // Payment link flow with session ID - verify payment and generate report
+        console.log('Payment link flow with session verification for domain:', pendingDomain);
+        verifyPaymentLinkWithSession(pendingDomain, sessionId);
+      } else {
+        // Checkout API flow - use original verification
+        verifyPaymentAndGenerateReport();
+      }
     } else if (pendingDomain) {
-      // Payment link flow - domain from localStorage
+      // Payment link flow without session ID (fallback)
       console.log('Payment link flow detected for domain:', pendingDomain);
       setDomain(pendingDomain);
       localStorage.removeItem('pendingDomain');
@@ -119,6 +127,52 @@ function SuccessContent() {
       }
       
       setError(err instanceof Error ? err.message : 'Failed to process payment');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const verifyPaymentLinkWithSession = async (domainName: string, sessionId: string) => {
+    try {
+      setIsGenerating(true);
+      console.log('Verifying payment link session for domain:', domainName);
+      
+      // Try to verify the payment session using our existing endpoint
+      const response = await fetch('/.netlify/functions/get-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          reportId: `report_${domainName.replace(/[^a-z0-9]/g, '_')}_${Date.now()}`,
+          sessionId 
+        }),
+      });
+
+      if (response.ok) {
+        // Payment verification successful - use the verified data
+        const data = await response.json();
+        console.log('Payment link session verified:', data);
+        
+        setPaymentVerified(true);
+        setReportData(data.reportData);
+        setDomain(data.reportData?.domain || data.domain || domainName);
+        setActualReportId(data.reportId);
+        setReportReady(true);
+        localStorage.removeItem('pendingDomain');
+      } else {
+        // Session verification failed, but we trust the payment link redirect
+        console.log('Session verification failed, proceeding with payment link trust');
+        setDomain(domainName);
+        localStorage.removeItem('pendingDomain');
+        await generateReport(domainName);
+      }
+    } catch (error) {
+      console.error('Payment link session verification error:', error);
+      // Fall back to generating report directly
+      setDomain(domainName);
+      localStorage.removeItem('pendingDomain');
+      await generateReport(domainName);
     } finally {
       setIsGenerating(false);
     }
