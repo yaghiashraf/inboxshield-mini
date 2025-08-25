@@ -36,7 +36,7 @@ export const handler: Handler = async (event, context) => {
     
     // Check if Stripe secret key is configured
     if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY.includes('REPLACE')) {
-      console.error('Stripe secret key not configured');
+      console.error('Stripe secret key not configured - current value:', process.env.STRIPE_SECRET_KEY?.substring(0, 10));
       return {
         statusCode: 500,
         headers: {
@@ -44,8 +44,13 @@ export const handler: Handler = async (event, context) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          error: 'Payment system not configured. Please contact support.',
-          details: 'Stripe secret key missing'
+          error: 'Payment system not configured. The administrator needs to set up Stripe keys.',
+          details: 'Stripe secret key is missing or not configured properly',
+          envCheck: {
+            hasSecretKey: !!process.env.STRIPE_SECRET_KEY,
+            secretKeyValid: !!(process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes('REPLACE')),
+            priceConfigured: !!process.env.REPORT_PRICE_CENTS
+          }
         }),
       };
     }

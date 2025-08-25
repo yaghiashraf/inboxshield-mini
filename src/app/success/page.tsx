@@ -21,19 +21,21 @@ function SuccessContent() {
   const reportId = searchParams?.get('report_id'); // This might be null now, we'll get it from metadata
 
   useEffect(() => {
+    // For payment link flow, we primarily use localStorage
+    const pendingDomain = localStorage.getItem('pendingDomain');
+    
     if (sessionId) {
+      // If we have a session ID (from checkout API), use the original flow
       verifyPaymentAndGenerateReport();
+    } else if (pendingDomain) {
+      // Payment link flow - domain from localStorage
+      console.log('Payment link flow detected for domain:', pendingDomain);
+      setDomain(pendingDomain);
+      localStorage.removeItem('pendingDomain');
+      generateReport(pendingDomain);
     } else {
-      // Fallback to localStorage method
-      const pendingDomain = localStorage.getItem('pendingDomain');
-      if (pendingDomain) {
-        setDomain(pendingDomain);
-        localStorage.removeItem('pendingDomain');
-        generateReport(pendingDomain);
-      } else {
-        setError('Missing payment information. Please contact support.');
-        setIsGenerating(false);
-      }
+      setError('Missing domain information. Please start a new scan and complete payment.');
+      setIsGenerating(false);
     }
   }, [sessionId, reportId]);
 
@@ -127,6 +129,9 @@ function SuccessContent() {
     try {
       console.log('Generating full report for:', domainName);
       
+      // Create a unique report ID for payment link flow
+      const paymentLinkReportId = `report_${domainName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
+      
       // Generate comprehensive report
       const response = await fetch('/.netlify/functions/generate-full-report', {
         method: 'POST',
@@ -145,6 +150,8 @@ function SuccessContent() {
 
       const result = await response.json();
       setReportData(result.reportData);
+      setDomain(domainName);
+      setActualReportId(paymentLinkReportId);
       setReportReady(true);
       console.log('Report generated successfully');
     } catch (error) {
@@ -224,7 +231,10 @@ function SuccessContent() {
   // Redirect to report page when ready
   if (reportReady && actualReportId) {
     setTimeout(() => {
-      router.push(`/report/${actualReportId}?session_id=${sessionId}`);
+      const reportUrl = sessionId 
+        ? `/report/${actualReportId}?session_id=${sessionId}`
+        : `/report/${actualReportId}?payment_link=true`;
+      router.push(reportUrl);
     }, 3000); // 3-second delay to show success message
   }
 
@@ -335,7 +345,12 @@ function SuccessContent() {
               {/* Manual Continue Button */}
               <div className="flex justify-center">
                 <button
-                  onClick={() => router.push(`/report/${actualReportId}?session_id=${sessionId}`)}
+                  onClick={() => {
+                    const reportUrl = sessionId 
+                      ? `/report/${actualReportId}?session_id=${sessionId}`
+                      : `/report/${actualReportId}?payment_link=true`;
+                    router.push(reportUrl);
+                  }}
                   className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   <div className="flex items-center justify-center gap-2">

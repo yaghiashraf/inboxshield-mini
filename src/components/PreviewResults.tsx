@@ -26,38 +26,19 @@ export function PreviewResults({ result }: PreviewResultsProps) {
     }
   };
 
-  const handlePurchaseReport = async () => {
+  const handlePurchaseReport = () => {
     try {
-      // Store domain in localStorage for fallback
+      // Store domain in localStorage for after payment completion
       localStorage.setItem('pendingDomain', result.domain);
       
-      // Create checkout session
-      const response = await fetch('/.netlify/functions/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ domain: result.domain }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create checkout session');
-      }
-
-      const { sessionId } = await response.json();
+      console.log('Redirecting to Stripe payment link for domain:', result.domain);
       
-      // Redirect to Stripe checkout
-      const stripe = (await import('@stripe/stripe-js')).loadStripe(
-        process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!
-      );
+      // Redirect directly to your Stripe payment link
+      window.location.href = 'https://buy.stripe.com/5kQ8wO7Uf6phgCy71zg3601';
       
-      const stripeInstance = await stripe;
-      if (stripeInstance) {
-        await stripeInstance.redirectToCheckout({ sessionId });
-      }
     } catch (error) {
-      console.error('Payment error:', error);
-      alert('Sorry, there was an error processing your payment. Please try again.');
+      console.error('Payment redirect error:', error);
+      alert('Sorry, there was an error redirecting to payment. Please try again.');
     }
   };
 

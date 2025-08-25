@@ -17,6 +17,7 @@ export default function ReportPage() {
 
   const reportId = params?.reportId as string;
   const sessionId = searchParams?.get('session_id');
+  const isPaymentLink = searchParams?.get('payment_link') === 'true';
 
   useEffect(() => {
     if (!reportId) {
@@ -25,8 +26,14 @@ export default function ReportPage() {
       return;
     }
 
-    verifyPaymentAndGetReport();
-  }, [reportId, sessionId]);
+    if (isPaymentLink) {
+      // For payment link flow, skip payment verification and generate report directly
+      generateReportFromPaymentLink();
+    } else {
+      // For checkout session flow, verify payment first
+      verifyPaymentAndGetReport();
+    }
+  }, [reportId, sessionId, isPaymentLink]);
 
   const verifyPaymentAndGetReport = async () => {
     try {
@@ -72,6 +79,48 @@ export default function ReportPage() {
       setPaymentVerified(data.paymentVerified);
     } catch (err) {
       console.error('Error fetching report:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load report');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const generateReportFromPaymentLink = async () => {
+    try {
+      console.log('Generating report from payment link for:', reportId);
+      
+      // Extract domain from reportId (format: report_domain_timestamp)
+      const domainMatch = reportId.match(/^report_(.+?)_\d+$/);
+      const domain = domainMatch ? domainMatch[1].replace(/_/g, '.') : null;
+      
+      if (!domain) {
+        throw new Error('Could not extract domain from report ID');
+      }
+      
+      console.log('Extracted domain:', domain);
+      
+      // Generate comprehensive report
+      const response = await fetch('/.netlify/functions/generate-full-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          domain: domain, 
+          paymentVerified: true // Trust that payment was completed via payment link
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate report');
+      }
+
+      const result = await response.json();
+      setReport(result.reportData);
+      setPaymentVerified(true);
+      console.log('Report generated successfully from payment link');
+    } catch (err) {
+      console.error('Error generating report from payment link:', err);
       setError(err instanceof Error ? err.message : 'Failed to load report');
     } finally {
       setIsLoading(false);
