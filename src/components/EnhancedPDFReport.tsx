@@ -122,7 +122,7 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
     <Page size="A4" style={styles.page}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>🛡️ InboxShield Mini - Complete Email Security Report</Text>
+        <Text style={styles.title}>InboxShield Mini - Complete Email Security Report</Text>
         <Text style={styles.subtitle}>Domain: {reportData.domain}</Text>
         <Text style={styles.subtitle}>Generated: {new Date(reportData.timestamp).toLocaleDateString()}</Text>
         <Text style={styles.subtitle}>Report ID: {reportData.reportId}</Text>
@@ -142,27 +142,27 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
 
       {/* Business Impact */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>📊 Business Impact Analysis</Text>
+        <Text style={styles.sectionTitle}>Business Impact Analysis</Text>
         <View style={{ padding: 10, backgroundColor: '#FEF3C7', borderRadius: 5, borderLeft: '4px solid #F59E0B' }}>
           <Text style={{ fontSize: 12, marginBottom: 5, fontWeight: 'bold' }}>Current Email Deliverability:</Text>
           <Text style={{ fontSize: 10, marginBottom: 3 }}>
-            • Estimated inbox delivery rate: {reportData.businessImpact?.estimatedDeliverabilityRate || 'Unknown'}
+            - Estimated inbox delivery rate: {reportData.businessImpact?.estimatedDeliverabilityRate || 'Unknown'}
           </Text>
           <Text style={{ fontSize: 10, marginBottom: 3 }}>
-            • Critical issues found: {reportData.businessImpact?.criticalIssuesFound || 0}
+            - Critical issues found: {reportData.businessImpact?.criticalIssuesFound || 0}
           </Text>
           <Text style={{ fontSize: 10, marginBottom: 3 }}>
-            • Potential improvement: {reportData.businessImpact?.potentialImprovementRate || '95%+'}
+            - Potential improvement: {reportData.businessImpact?.potentialImprovementRate || '95%+'}
           </Text>
           <Text style={{ fontSize: 10 }}>
-            • Recommended action timeframe: {reportData.businessImpact?.recommendedActionTimeframe || 'Within 24 hours'}
+            - Recommended action timeframe: {reportData.businessImpact?.recommendedActionTimeframe || 'Within 24 hours'}
           </Text>
         </View>
       </View>
 
       {/* DNS Fixes */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>🔧 DNS Record Fixes (Copy-Paste Ready)</Text>
+        <Text style={styles.sectionTitle}>DNS Record Fixes (Copy-Paste Ready)</Text>
         {reportData.dnsFixesGenerated?.map((fix: any, index: number) => (
           <View key={index} style={styles.dnsFixBox}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
@@ -240,8 +240,8 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
 
       {/* Footer */}
       <Text style={styles.footer}>
-        InboxShield Mini Professional Report • Generated on {new Date().toLocaleDateString()} • 
-        Support: hello@inboxshield-mini.com • Report ID: {reportData.reportId}
+        InboxShield Mini Professional Report | Generated on {new Date().toLocaleDateString()} | 
+        Support: hello@inboxshield-mini.com | Report ID: {reportData.reportId}
       </Text>
     </Page>
   </Document>

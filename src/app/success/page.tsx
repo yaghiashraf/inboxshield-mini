@@ -394,7 +394,7 @@ function SuccessContent() {
           '4. Select "TXT" as record type',
           ...(fixes.length > 0 ? [
             `5. For each record below:`,
-            ...fixes.map((fix: any, index: number) => 
+            ...fixes.map((fix: any) => 
               `   ${fix.type}: Name="${fix.name}" Value="${fix.record}"`
             ),
             '6. Click "Save" and wait up to 24 hours for propagation'
@@ -414,7 +414,7 @@ function SuccessContent() {
           '5. Select "TXT" type',
           ...(fixes.length > 0 ? [
             '6. Add each record:',
-            ...fixes.map((fix: any, index: number) => 
+            ...fixes.map((fix: any) => 
               `   ${fix.type}: Name="${fix.name}" Content="${fix.record}"`
             ),
             '7. Click "Save" (changes are instant)'
@@ -434,8 +434,7 @@ function SuccessContent() {
           '5. Choose "TXT Record" type',
           ...(fixes.length > 0 ? [
             '6. Enter for each record:',
-            ...fixes.map((fix: any, index: number) => {
-              // For Namecheap, we need to handle the host field differently
+            ...fixes.map((fix: any) => {
               const host = fix.name === domain ? '@' : fix.name.replace(`.${domain}`, '');
               return `   ${fix.type}: Host="${host}" Value="${fix.record}"`;
             }),
@@ -443,6 +442,167 @@ function SuccessContent() {
           ] : [
             '6. Fill in Host and Value from DNS fixes above',
             '7. Click the checkmark to save'
+          ])
+        ]
+      },
+      route53: {
+        title: 'Amazon Route 53 Setup',
+        steps: [
+          '1. Log in to AWS Console and go to Route 53',
+          '2. Click "Hosted zones" and select your domain',
+          '3. Click "Create record"',
+          '4. Choose "Simple routing" and click "Next"',
+          '5. Click "Define simple record"',
+          ...(fixes.length > 0 ? [
+            '6. For each record:',
+            ...fixes.map((fix: any) => 
+              `   ${fix.type}: Record name="${fix.name === domain ? '' : fix.name.replace(`.${domain}`, '')}" Value="${fix.record}" Type="TXT"`
+            ),
+            '7. Click "Create records"'
+          ] : [
+            '6. Enter Record name and Value from DNS fixes above',
+            '7. Set Record type to "TXT" and click "Create records"'
+          ])
+        ]
+      },
+      digitalocean: {
+        title: 'DigitalOcean DNS Setup',
+        steps: [
+          '1. Log in to DigitalOcean control panel',
+          '2. Go to "Networking" > "Domains"',
+          '3. Click on your domain name',
+          '4. Click "Add Record" and select "TXT"',
+          ...(fixes.length > 0 ? [
+            '5. Add each record:',
+            ...fixes.map((fix: any) => {
+              const hostname = fix.name === domain ? '@' : fix.name.replace(`.${domain}`, '');
+              return `   ${fix.type}: Hostname="${hostname}" Value="${fix.record}"`;
+            }),
+            '6. Click "Create Record" for each'
+          ] : [
+            '5. Enter Hostname and Value from DNS fixes above',
+            '6. Click "Create Record"'
+          ])
+        ]
+      },
+      hover: {
+        title: 'Hover DNS Setup',
+        steps: [
+          '1. Log in to your Hover account',
+          '2. Go to "Domains" and click "Manage" on your domain',
+          '3. Click the "DNS" tab',
+          '4. Click "Add New" and select "TXT"',
+          ...(fixes.length > 0 ? [
+            '5. For each record:',
+            ...fixes.map((fix: any) => {
+              const subdomain = fix.name === domain ? '*' : fix.name.replace(`.${domain}`, '');
+              return `   ${fix.type}: Subdomain="${subdomain}" Content="${fix.record}"`;
+            }),
+            '6. Click "Save DNS" when done'
+          ] : [
+            '5. Enter Subdomain and Content from DNS fixes above',
+            '6. Click "Save DNS"'
+          ])
+        ]
+      },
+      networksolutions: {
+        title: 'Network Solutions DNS Setup',
+        steps: [
+          '1. Log in to Network Solutions account',
+          '2. Go to "Account Manager" > "My Domain Names"',
+          '3. Click "Manage" next to your domain',
+          '4. Click "Change Where Domain Points" > "Advanced DNS"',
+          '5. Click "Manage Advanced DNS Records"',
+          ...(fixes.length > 0 ? [
+            '6. Add each TXT record:',
+            ...fixes.map((fix: any) => {
+              const host = fix.name === domain ? '@' : fix.name.replace(`.${domain}`, '');
+              return `   ${fix.type}: Host="${host}" Text="${fix.record}" TTL=3600`;
+            }),
+            '7. Click "Continue" and then "Save Changes"'
+          ] : [
+            '6. Enter Host and Text from DNS fixes above',
+            '7. Click "Continue" and "Save Changes"'
+          ])
+        ]
+      },
+      bluehost: {
+        title: 'Bluehost DNS Setup',
+        steps: [
+          '1. Log in to your Bluehost cPanel',
+          '2. Go to "Domains" section and click "Zone Editor"',
+          '3. Select your domain and click "Manage"',
+          '4. Click "Add Record" and select "TXT"',
+          ...(fixes.length > 0 ? [
+            '5. Add each record:',
+            ...fixes.map((fix: any) => {
+              const name = fix.name === domain ? domain : fix.name;
+              return `   ${fix.type}: Name="${name}" TXT Data="${fix.record}"`;
+            }),
+            '6. Click "Add Record" for each'
+          ] : [
+            '5. Enter Name and TXT Data from DNS fixes above',
+            '6. Click "Add Record"'
+          ])
+        ]
+      },
+      hostgator: {
+        title: 'HostGator DNS Setup',
+        steps: [
+          '1. Log in to your HostGator cPanel',
+          '2. Find "Domains" section and click "Zone Editor"',
+          '3. Click "Manage" next to your domain',
+          '4. Click "Add Record" and select "TXT Record"',
+          ...(fixes.length > 0 ? [
+            '5. For each record:',
+            ...fixes.map((fix: any) => 
+              `   ${fix.type}: Name="${fix.name}" Record="${fix.record}"`
+            ),
+            '6. Click "Add Record" and wait for propagation'
+          ] : [
+            '5. Enter Name and Record from DNS fixes above',
+            '6. Click "Add Record"'
+          ])
+        ]
+      },
+      siteground: {
+        title: 'SiteGround DNS Setup',
+        steps: [
+          '1. Log in to SiteGround User Area',
+          '2. Go to "Websites" and click "Manage" on your site',
+          '3. Go to "Domain" > "DNS Zone Editor"',
+          '4. Click "Add New Record" and select "TXT"',
+          ...(fixes.length > 0 ? [
+            '5. Add each record:',
+            ...fixes.map((fix: any) => {
+              const name = fix.name === domain ? '@' : fix.name.replace(`.${domain}`, '');
+              return `   ${fix.type}: Name="${name}" Value="${fix.record}"`;
+            }),
+            '6. Click "Create" for each record'
+          ] : [
+            '5. Enter Name and Value from DNS fixes above',
+            '6. Click "Create"'
+          ])
+        ]
+      },
+      '1and1': {
+        title: '1&1 IONOS DNS Setup',
+        steps: [
+          '1. Log in to your 1&1 IONOS account',
+          '2. Go to "Domains & SSL" > "Domains"',
+          '3. Click the gear icon next to your domain',
+          '4. Click "DNS" and then "Add Record"',
+          '5. Select "TXT" record type',
+          ...(fixes.length > 0 ? [
+            '6. For each record:',
+            ...fixes.map((fix: any) => {
+              const host = fix.name === domain ? '' : fix.name.replace(`.${domain}`, '');
+              return `   ${fix.type}: Host Name="${host}" Value="${fix.record}"`;
+            }),
+            '7. Click "Save" for each record'
+          ] : [
+            '6. Enter Host Name and Value from DNS fixes above',
+            '7. Click "Save"'
           ])
         ]
       }
