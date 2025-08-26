@@ -182,7 +182,7 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
 
       {/* Provider Setup Instructions */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>⚙️ Provider Setup Instructions</Text>
+        <Text style={styles.sectionTitle}>DNS Provider Setup Instructions</Text>
         
         <View style={styles.providerSection}>
           <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>GoDaddy Setup:</Text>
@@ -203,6 +203,102 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
           {reportData.providerInstructions?.namecheap?.steps?.map((step: string, index: number) => (
             <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
           ))}
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Amazon Route 53 Setup:</Text>
+          {reportData.providerInstructions?.route53?.steps?.map((step: string, index: number) => (
+            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+          ))}
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>DigitalOcean Setup:</Text>
+          {reportData.providerInstructions?.digitalocean?.steps?.map((step: string, index: number) => (
+            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+          ))}
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Hover Setup:</Text>
+          {reportData.providerInstructions?.hover?.steps?.map((step: string, index: number) => (
+            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+          ))}
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Network Solutions Setup:</Text>
+          {reportData.providerInstructions?.networksolutions?.steps?.map((step: string, index: number) => (
+            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+          ))}
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Bluehost Setup:</Text>
+          {reportData.providerInstructions?.bluehost?.steps?.map((step: string, index: number) => (
+            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+          ))}
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>HostGator Setup:</Text>
+          {reportData.providerInstructions?.hostgator?.steps?.map((step: string, index: number) => (
+            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+          ))}
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>SiteGround Setup:</Text>
+          {reportData.providerInstructions?.siteground?.steps?.map((step: string, index: number) => (
+            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+          ))}
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>1&1 IONOS Setup:</Text>
+          {reportData.providerInstructions?.['1and1']?.steps?.map((step: string, index: number) => (
+            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+          ))}
+        </View>
+      </View>
+
+      {/* Email Provider Setup Instructions */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Email Provider Setup Instructions</Text>
+        
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Google Workspace Setup:</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>1. Sign in to your Google Admin console (admin.google.com)</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>2. Go to Apps > Google Workspace > Gmail</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>3. Click "Authenticate email" and then "Advanced settings"</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>4. Scroll down to "Email authentication"</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>5. For SPF: Click "Set up email authentication" and follow the wizard</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>6. For DKIM: Go to "Generate new record" and add the provided TXT record to your DNS</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>7. For DMARC: Create a TXT record at _dmarc.yourdomain.com with the value from your DNS fixes</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>8. Wait 24-48 hours for changes to propagate</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>9. Verify setup using Gmail's email authentication checker</Text>
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Microsoft 365/Outlook Setup:</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>1. Sign in to Microsoft 365 Admin Center (admin.microsoft.com)</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>2. Go to Settings > Domains and select your domain</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>3. Click "DNS records" tab</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>4. For SPF: Microsoft usually auto-configures, but verify the TXT record exists</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>5. For DKIM: Go to Security > Email & collaboration > Exchange</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>6. Under "Protection" go to "DKIM" and enable it for your domain</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>7. Copy the CNAME records provided and add them to your DNS</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>8. For DMARC: Add the TXT record from your DNS fixes to _dmarc.yourdomain.com</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>9. Use Microsoft's Message Analyzer to verify your setup</Text>
+        </View>
+
+        <View style={styles.providerSection}>
+          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>General Email Provider Notes:</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>- Always add DNS records through your domain registrar or DNS hosting provider</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>- Changes can take 24-72 hours to fully propagate across the internet</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>- Test your setup using tools like MXToolbox, DMARC Analyzer, or Mail-Tester</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>- Start with a relaxed DMARC policy (p=none) and gradually tighten to p=quarantine or p=reject</Text>
+          <Text style={{ fontSize: 10, marginBottom: 2 }}>- Monitor DMARC reports to ensure legitimate emails aren't being blocked</Text>
         </View>
       </View>
 
