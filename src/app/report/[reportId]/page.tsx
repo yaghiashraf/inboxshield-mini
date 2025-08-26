@@ -143,7 +143,7 @@ export default function ReportPage() {
   };
 
   const enhanceReportForPDF = (originalReport: any, domainName: string, reportId: string) => {
-    return {
+    const enhancedReport = {
       ...originalReport,
       reportId,
       businessImpact: {
@@ -154,10 +154,14 @@ export default function ReportPage() {
         recommendedActionTimeframe: originalReport.overallScore < 50 ? 'Within 24 hours' : 'Within 48 hours'
       },
       dnsFixesGenerated: generateDNSFixes(originalReport, domainName),
-      providerInstructions: generateProviderInstructions(),
       recommendations: generateRecommendations(originalReport),
       verificationSteps: generateVerificationSteps()
     };
+    
+    // Generate provider instructions with the enhanced report data that includes DNS fixes
+    enhancedReport.providerInstructions = generateProviderInstructions(enhancedReport, domainName);
+    
+    return enhancedReport;
   };
 
   const createComprehensiveFallbackReport = (domainName: string, reportId: string) => {
@@ -235,40 +239,73 @@ export default function ReportPage() {
     return fixes;
   };
 
-  const generateProviderInstructions = () => ({
-    godaddy: {
-      steps: [
-        '1. Log in to your GoDaddy account',
-        '2. Go to "My Products" and select "DNS"',
-        '3. Click "Add" to create a new record',
-        '4. Select "TXT" as record type',
-        '5. Enter the Name and Value from above',
-        '6. Click "Save" and wait up to 24 hours for propagation'
-      ]
-    },
-    cloudflare: {
-      steps: [
-        '1. Log in to your Cloudflare dashboard',
-        '2. Select your domain',
-        '3. Go to the "DNS" tab',
-        '4. Click "Add record"',
-        '5. Select "TXT" type',
-        '6. Enter Name and Content from the fixes above',
-        '7. Click "Save"'
-      ]
-    },
-    namecheap: {
-      steps: [
-        '1. Sign in to your Namecheap account',
-        '2. Go to Domain List and click "Manage"',
-        '3. Go to "Advanced DNS" tab',
-        '4. Click "Add New Record"',
-        '5. Choose "TXT Record" type',
-        '6. Fill in Host and Value',
-        '7. Click the checkmark to save'
-      ]
-    }
-  });
+  const generateProviderInstructions = (reportData: any, domain: string) => {
+    const fixes = reportData?.dnsFixesGenerated || [];
+    
+    return {
+      godaddy: {
+        title: 'GoDaddy DNS Setup',
+        steps: [
+          '1. Log in to your GoDaddy account',
+          '2. Go to "My Products" and select "DNS"',
+          '3. Click "Add" to create a new record',
+          '4. Select "TXT" as record type',
+          ...(fixes.length > 0 ? [
+            `5. For each record below:`,
+            ...fixes.map((fix: any, index: number) => 
+              `   ${fix.type}: Name="${fix.name}" Value="${fix.record}"`
+            ),
+            '6. Click "Save" and wait up to 24 hours for propagation'
+          ] : [
+            '5. Enter the Name and Value from the DNS fixes section above',
+            '6. Click "Save" and wait up to 24 hours for propagation'
+          ])
+        ]
+      },
+      cloudflare: {
+        title: 'Cloudflare DNS Setup', 
+        steps: [
+          '1. Log in to your Cloudflare dashboard',
+          '2. Select your domain',
+          '3. Go to the "DNS" tab',
+          '4. Click "Add record"',
+          '5. Select "TXT" type',
+          ...(fixes.length > 0 ? [
+            '6. Add each record:',
+            ...fixes.map((fix: any, index: number) => 
+              `   ${fix.type}: Name="${fix.name}" Content="${fix.record}"`
+            ),
+            '7. Click "Save" (changes are instant)'
+          ] : [
+            '6. Enter Name and Content from the DNS fixes above',
+            '7. Click "Save"'
+          ])
+        ]
+      },
+      namecheap: {
+        title: 'Namecheap DNS Setup',
+        steps: [
+          '1. Sign in to your Namecheap account',
+          '2. Go to Domain List and click "Manage"',
+          '3. Go to "Advanced DNS" tab', 
+          '4. Click "Add New Record"',
+          '5. Choose "TXT Record" type',
+          ...(fixes.length > 0 ? [
+            '6. Enter for each record:',
+            ...fixes.map((fix: any, index: number) => {
+              // For Namecheap, we need to handle the host field differently
+              const host = fix.name === domain ? '@' : fix.name.replace(`.${domain}`, '');
+              return `   ${fix.type}: Host="${host}" Value="${fix.record}"`;
+            }),
+            '7. Click the checkmark to save each record'
+          ] : [
+            '6. Fill in Host and Value from DNS fixes above',
+            '7. Click the checkmark to save'
+          ])
+        ]
+      }
+    };
+  };
 
   const generateRecommendations = (report: any) => {
     const recs = [];

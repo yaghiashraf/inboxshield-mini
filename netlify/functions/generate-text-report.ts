@@ -145,6 +145,10 @@ function generateTextReport(reportData: any): string {
       });
     }
     lines.push('');
+  } else {
+    lines.push('Provider-specific instructions not available.');
+    lines.push('Please refer to the DNS fixes section above for exact records to add.');
+    lines.push('');
   }
 
   // Add recommendations
