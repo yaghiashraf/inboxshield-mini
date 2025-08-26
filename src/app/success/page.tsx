@@ -844,76 +844,284 @@ function SuccessContent() {
           )}
 
           {/* Success State */}
-          {reportReady && !isGenerating && (
+          {reportReady && !isGenerating && reportData && (
             <div className="mb-12">
-              <div className="inline-flex items-center justify-center w-24 h-24 bg-green-500/20 rounded-full border-4 border-green-500 mb-6">
-                <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                  Report Ready! 🎉
-                </span>
-              </h1>
-              
-              <p className="text-xl text-gray-300 mb-4">
-                Your comprehensive email security analysis is complete!
-              </p>
-              
-              {domain && (
-                <p className="text-lg text-blue-400 mb-4">
-                  Analysis for: <span className="font-bold">{domain}</span>
-                </p>
-              )}
-              
-              <div className="inline-flex items-center space-x-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-2 mb-8">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                <span className="text-green-300 text-sm font-medium">Redirecting to your report in 3 seconds...</span>
+              {/* Header */}
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-green-500/20 rounded-full border-4 border-green-500 mb-4">
+                  <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                  <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                    Analysis Complete! 🎉
+                  </span>
+                </h1>
+                
+                {domain && (
+                  <p className="text-lg text-blue-400 mb-2">
+                    <span className="font-bold">{domain}</span>
+                  </p>
+                )}
               </div>
 
-              {/* Success Steps */}
-              <div className="grid md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
-                <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-4">
-                  <div className="text-2xl mb-2">✅</div>
-                  <p className="text-green-300 text-sm font-medium">Payment Verified</p>
-                </div>
-                <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-4">
-                  <div className="text-2xl mb-2">✅</div>
-                  <p className="text-green-300 text-sm font-medium">DNS Analyzed</p>
-                </div>
-                <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-4">
-                  <div className="text-2xl mb-2">✅</div>
-                  <p className="text-green-300 text-sm font-medium">Report Generated</p>
-                </div>
-              </div>
-
-              <div className="bg-blue-900/30 border border-blue-500/30 rounded-xl p-4 max-w-md mx-auto mb-6">
-                <p className="text-blue-300 text-sm">
-                  <strong>Next:</strong> View your detailed report with copy-paste DNS fixes!
-                </p>
-              </div>
-
-              {/* Skip to download section */}
-              <div className="flex justify-center">
-                <button
-                  onClick={() => {
-                    const downloadSection = document.querySelector('[data-download-section]');
-                    if (downloadSection) {
-                      downloadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                  }}
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3" />
-                    </svg>
-                    <span>Download Your Report Now</span>
+              {/* Overall Score - Prominent Display */}
+              <div className="max-w-2xl mx-auto mb-8">
+                <div className={`relative overflow-hidden rounded-2xl p-8 text-center ${
+                  reportData.overallScore >= 80 
+                    ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-2 border-green-400/30' 
+                    : reportData.overallScore >= 60
+                    ? 'bg-gradient-to-br from-yellow-500/20 to-amber-500/20 border-2 border-yellow-400/30'
+                    : 'bg-gradient-to-br from-red-500/20 to-pink-500/20 border-2 border-red-400/30'
+                }`}>
+                  {/* Background pattern */}
+                  <div className="absolute inset-0 opacity-5">
+                    <div className="absolute inset-0" style={{
+                      backgroundImage: 'radial-gradient(circle at 25px 25px, white 2px, transparent 0), radial-gradient(circle at 75px 75px, white 2px, transparent 0)',
+                      backgroundSize: '100px 100px'
+                    }}></div>
                   </div>
-                </button>
+                  
+                  <div className="relative">
+                    <div className={`text-6xl md:text-7xl font-black mb-4 ${
+                      reportData.overallScore >= 80 ? 'text-green-400' : 
+                      reportData.overallScore >= 60 ? 'text-yellow-400' : 'text-red-400'
+                    }`}>
+                      {reportData.overallScore}
+                      <span className="text-3xl md:text-4xl opacity-80">/100</span>
+                    </div>
+                    
+                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                      Email Security Score
+                    </h2>
+                    
+                    <p className={`text-lg font-medium mb-2 ${
+                      reportData.overallScore >= 80 ? 'text-green-300' : 
+                      reportData.overallScore >= 60 ? 'text-yellow-300' : 'text-red-300'
+                    }`}>
+                      {reportData.overallScore >= 80 && '🛡️ Excellent Security'}
+                      {reportData.overallScore >= 60 && reportData.overallScore < 80 && '⚠️ Moderate Security'}
+                      {reportData.overallScore < 60 && '🚨 Critical Issues Found'}
+                    </p>
+                    
+                    <p className="text-gray-300 text-sm">
+                      {reportData.overallScore >= 80 && 'Your email security is well-configured with minor room for improvement.'}
+                      {reportData.overallScore >= 60 && reportData.overallScore < 80 && 'Your email security has some gaps that should be addressed.'}
+                      {reportData.overallScore < 60 && 'Your email security has critical vulnerabilities that need immediate attention.'}
+                    </p>
+                  </div>
+                </div>
               </div>
+
+              {/* Issues Summary - Expandable */}
+              {(() => {
+                const allIssues = [
+                  ...(reportData.spf?.status === 'fail' ? [{protocol: 'SPF', issue: reportData.spf.issues?.[0] || 'SPF not configured', priority: 'HIGH'}] : []),
+                  ...(reportData.dmarc?.status === 'fail' ? [{protocol: 'DMARC', issue: reportData.dmarc.issues?.[0] || 'DMARC not configured', priority: 'HIGH'}] : []),
+                  ...(reportData.spf?.status === 'warn' ? [{protocol: 'SPF', issue: reportData.spf.issues?.[0] || 'SPF needs improvement', priority: 'MEDIUM'}] : []),
+                  ...(reportData.dmarc?.status === 'warn' ? [{protocol: 'DMARC', issue: reportData.dmarc.issues?.[0] || 'DMARC needs enhancement', priority: 'HIGH'}] : []),
+                  ...(reportData.dkim?.status === 'fail' ? [{protocol: 'DKIM', issue: reportData.dkim.issues?.[0] || 'DKIM not configured', priority: 'MEDIUM'}] : [])
+                ];
+                
+                return allIssues.length > 0 ? (
+                  <div className="max-w-4xl mx-auto mb-8">
+                    <details className="group bg-gray-800/50 border border-gray-700/50 rounded-2xl p-6 cursor-pointer hover:bg-gray-800/70 transition-all duration-300">
+                      <summary className="flex items-center justify-between list-none">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center justify-center w-12 h-12 bg-red-500/20 rounded-full">
+                            <span className="text-2xl">⚠️</span>
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold text-white">
+                              {allIssues.length} Security {allIssues.length === 1 ? 'Issue' : 'Issues'} Found
+                            </h3>
+                            <p className="text-gray-400 text-sm">Click to view details and fixes</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-gray-400 group-open:hidden">Show Details</span>
+                          <span className="text-sm text-gray-400 hidden group-open:inline">Hide Details</span>
+                          <svg className="w-5 h-5 text-gray-400 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
+                      </summary>
+                      
+                      {/* Expanded Issues List */}
+                      <div className="mt-6 space-y-4">
+                        {allIssues.map((issue, index) => (
+                          <div key={index} className="bg-gray-900/50 rounded-xl p-4 border-l-4 border-red-400/50">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-2">
+                                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                    issue.priority === 'HIGH' 
+                                      ? 'bg-red-500/20 text-red-300 border border-red-500/30' 
+                                      : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                                  }`}>
+                                    {issue.priority} PRIORITY
+                                  </span>
+                                  <span className="text-blue-300 font-bold">{issue.protocol}</span>
+                                </div>
+                                <p className="text-gray-300 text-sm">{issue.issue}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  </div>
+                ) : (
+                  <div className="max-w-2xl mx-auto mb-8">
+                    <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-6 text-center">
+                      <div className="text-4xl mb-3">🎉</div>
+                      <h3 className="text-xl font-bold text-green-300 mb-2">Great Job!</h3>
+                      <p className="text-gray-300 text-sm">Your email security configuration looks solid. Consider our advanced recommendations for even better protection.</p>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Prominent "Fix These Issues Now" CTA Banner */}
+              {reportData && (reportData.spf?.status === 'fail' || reportData.dmarc?.status === 'fail' || reportData.spf?.status === 'warn' || reportData.dmarc?.status === 'warn' || reportData.dkim?.status === 'fail') && (
+                <div className="max-w-4xl mx-auto mb-12">
+                  <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 shadow-2xl">
+                    {/* Animated background */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 animate-pulse opacity-75"></div>
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute inset-0" style={{
+                        backgroundImage: 'linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%)',
+                        backgroundSize: '20px 20px',
+                        animation: 'shimmer 2s infinite linear'
+                      }}></div>
+                    </div>
+                    
+                    <div className="relative text-center">
+                      <div className="text-4xl md:text-5xl font-black text-white mb-4">
+                        🚀 Fix These Issues Now!
+                      </div>
+                      
+                      <p className="text-xl md:text-2xl text-blue-100 font-semibold mb-6">
+                        Get Your Complete DNS Fix Package - Instant Delivery
+                      </p>
+                      
+                      {/* Features Grid */}
+                      <div className="grid md:grid-cols-2 gap-6 text-left mb-8 max-w-4xl mx-auto">
+                        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="text-2xl">📋</div>
+                            <div>
+                              <h4 className="font-bold text-white mb-2">Detailed Analysis Report:</h4>
+                              <ul className="text-blue-100 text-sm space-y-1">
+                                <li>• Professional PDF with full security audit</li>
+                                <li>• Shareable link for your team/consultants</li>
+                                <li>• Priority level of each issue found</li>
+                                <li>• Business impact explanation for each problem</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="text-2xl">🔧</div>
+                            <div>
+                              <h4 className="font-bold text-white mb-2">Ready-to-Use Solutions:</h4>
+                              <ul className="text-blue-100 text-sm space-y-1">
+                                <li>• Exact DNS records formatted for copy-paste</li>
+                                <li>• Step-by-step instructions with screenshots</li>
+                                <li>• Provider-specific guides (GoDaddy, Cloudflare, etc.)</li>
+                                <li>• Verification steps to confirm fixes worked</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="text-2xl">📈</div>
+                            <div>
+                              <h4 className="font-bold text-white mb-2">Expected Results Within 24-48 Hours:</h4>
+                              <ul className="text-blue-100 text-sm space-y-1">
+                                <li>• 95%+ inbox delivery rate (vs current ~50%)</li>
+                                <li>• Zero important emails in spam folders</li>
+                                <li>• Enhanced sender reputation with ISPs</li>
+                                <li>• Protection against domain impersonation</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="text-2xl">💰</div>
+                            <div>
+                              <h4 className="font-bold text-white mb-2">Business Impact:</h4>
+                              <ul className="text-blue-100 text-sm space-y-1">
+                                <li>• Higher email marketing conversion rates</li>
+                                <li>• Customers actually receive invoices & updates</li>
+                                <li>• Professional brand image & trust</li>
+                                <li>• Reduced customer support tickets</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CTA Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <button
+                          onClick={() => {
+                            const downloadSection = document.querySelector('[data-download-section]');
+                            if (downloadSection) {
+                              downloadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                          }}
+                          className="bg-white text-blue-600 font-black py-4 px-8 rounded-xl text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        >
+                          📥 Download Your Fix Package
+                        </button>
+                        
+                        <div className="flex items-center gap-2 text-blue-100">
+                          <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-sm font-medium">Payment Verified & Ready</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Success message for well-configured domains */}
+              {reportData && reportData.overallScore >= 80 && (
+                <div className="max-w-3xl mx-auto mb-12">
+                  <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-8 text-center shadow-2xl">
+                    <div className="text-4xl md:text-5xl font-black text-white mb-4">
+                      🎉 Excellent Security!
+                    </div>
+                    
+                    <p className="text-xl text-green-100 font-semibold mb-6">
+                      Your email security is well-configured. Get your detailed report below.
+                    </p>
+                    
+                    <button
+                      onClick={() => {
+                        const downloadSection = document.querySelector('[data-download-section]');
+                        if (downloadSection) {
+                          downloadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                      }}
+                      className="bg-white text-green-600 font-black py-4 px-8 rounded-xl text-lg hover:bg-green-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    >
+                      📥 Download Your Security Report
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
