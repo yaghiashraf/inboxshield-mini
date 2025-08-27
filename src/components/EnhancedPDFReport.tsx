@@ -1,69 +1,89 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
-// Create styles
+// Create styles with improved design
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
-    padding: 30,
+    padding: 40,
     fontFamily: 'Helvetica',
+    fontSize: 12,
+    lineHeight: 1.6,
   },
   header: {
-    marginBottom: 20,
-    borderBottom: '2px solid #3B82F6',
-    paddingBottom: 10,
+    marginBottom: 30,
+    borderBottom: '3px solid #3B82F6',
+    paddingBottom: 15,
+    backgroundColor: '#F8FAFC',
+    padding: 20,
+    borderRadius: 8,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#1F2937',
-    marginBottom: 5,
+    marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#6B7280',
-    marginBottom: 10,
-  },
-  scoreSection: {
-    backgroundColor: '#F8FAFC',
-    padding: 15,
-    borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 4,
     textAlign: 'center',
   },
+  scoreSection: {
+    backgroundColor: '#F0F9FF',
+    padding: 25,
+    borderRadius: 12,
+    marginBottom: 30,
+    textAlign: 'center',
+    border: '2px solid #3B82F6',
+  },
   scoreText: {
-    fontSize: 18,
+    fontSize: 36,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#1F2937',
+    marginBottom: 8,
+  },
+  statusText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 5,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 25,
+    pageBreakInside: 'avoid',
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#374151',
-    marginBottom: 10,
-    borderBottom: '1px solid #E5E7EB',
-    paddingBottom: 5,
+    color: '#1F2937',
+    marginBottom: 15,
+    backgroundColor: '#F3F4F6',
+    padding: 10,
+    borderRadius: 6,
+    borderLeft: '4px solid #3B82F6',
   },
   dnsFixBox: {
-    backgroundColor: '#F3F4F6',
-    padding: 12,
-    marginBottom: 10,
-    borderRadius: 5,
+    backgroundColor: '#F8FAFC',
+    padding: 15,
+    marginBottom: 15,
+    borderRadius: 8,
+    border: '1px solid #E5E7EB',
     borderLeft: '4px solid #3B82F6',
   },
   dnsRecord: {
     fontFamily: 'Courier',
-    fontSize: 10,
+    fontSize: 9,
     color: '#374151',
-    marginTop: 5,
-    backgroundColor: '#E5E7EB',
-    padding: 8,
-    borderRadius: 3,
+    marginTop: 8,
+    backgroundColor: '#F3F4F6',
+    padding: 10,
+    borderRadius: 4,
+    border: '1px solid #D1D5DB',
   },
   priorityHigh: {
     color: '#DC2626',
@@ -73,29 +93,53 @@ const styles = StyleSheet.create({
     color: '#D97706',
     fontWeight: 'bold',
   },
+  priorityLow: {
+    color: '#059669',
+    fontWeight: 'bold',
+  },
   recommendationItem: {
-    marginBottom: 10,
-    padding: 10,
+    marginBottom: 15,
+    padding: 15,
     backgroundColor: '#F0F9FF',
-    borderRadius: 5,
-    borderLeft: '3px solid #3B82F6',
+    borderRadius: 8,
+    borderLeft: '4px solid #3B82F6',
   },
   providerSection: {
-    marginBottom: 15,
-    padding: 10,
-    backgroundColor: '#F9FAFB',
-    borderRadius: 5,
+    marginBottom: 20,
+    padding: 12,
+    backgroundColor: '#FAFAFA',
+    borderRadius: 6,
+    border: '1px solid #E5E7EB',
+  },
+  providerTitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#374151',
+  },
+  providerStep: {
+    fontSize: 10,
+    marginBottom: 3,
+    paddingLeft: 5,
+    color: '#4B5563',
+  },
+  impactBox: {
+    backgroundColor: '#FEF3C7',
+    padding: 15,
+    borderRadius: 8,
+    borderLeft: '4px solid #F59E0B',
+    marginBottom: 20,
   },
   footer: {
     position: 'absolute',
     bottom: 30,
-    left: 30,
-    right: 30,
+    left: 40,
+    right: 40,
     textAlign: 'center',
-    fontSize: 10,
+    fontSize: 9,
     color: '#9CA3AF',
     borderTop: '1px solid #E5E7EB',
-    paddingTop: 10,
+    paddingTop: 12,
   },
 });
 
@@ -113,7 +157,8 @@ const getPriorityStyle = (priority: string) => {
   switch (priority) {
     case 'HIGH': return styles.priorityHigh;
     case 'MEDIUM': return styles.priorityMedium;
-    default: return { color: '#059669' };
+    case 'LOW': return styles.priorityLow;
+    default: return styles.priorityLow;
   }
 };
 
@@ -131,9 +176,12 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
       {/* Executive Summary */}
       <View style={styles.scoreSection}>
         <Text style={[styles.scoreText, { color: getScoreColor(reportData.overallScore) }]}>
-          Security Score: {reportData.overallScore}/100
+          {reportData.overallScore}/100
         </Text>
-        <Text style={{ fontSize: 12, marginTop: 5, color: '#6B7280' }}>
+        <Text style={{ fontSize: 16, color: '#1F2937', marginBottom: 8 }}>
+          Email Security Score
+        </Text>
+        <Text style={[styles.statusText, { color: getScoreColor(reportData.overallScore) }]}>
           {reportData.businessImpact?.currentImpactLevel === 'HIGH' && 'CRITICAL: Immediate action required'}
           {reportData.businessImpact?.currentImpactLevel === 'MEDIUM' && 'MODERATE: Action recommended within 24 hours'}
           {reportData.businessImpact?.currentImpactLevel === 'LOW' && 'GOOD: Minor improvements available'}
@@ -143,19 +191,19 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
       {/* Business Impact */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Business Impact Analysis</Text>
-        <View style={{ padding: 10, backgroundColor: '#FEF3C7', borderRadius: 5, borderLeft: '4px solid #F59E0B' }}>
-          <Text style={{ fontSize: 12, marginBottom: 5, fontWeight: 'bold' }}>Current Email Deliverability:</Text>
-          <Text style={{ fontSize: 10, marginBottom: 3 }}>
-            - Estimated inbox delivery rate: {reportData.businessImpact?.estimatedDeliverabilityRate || 'Unknown'}
+        <View style={styles.impactBox}>
+          <Text style={{ fontSize: 13, marginBottom: 10, fontWeight: 'bold', color: '#92400E' }}>Current Email Deliverability Status:</Text>
+          <Text style={{ fontSize: 11, marginBottom: 6, color: '#1F2937' }}>
+            • Estimated inbox delivery rate: {reportData.businessImpact?.estimatedDeliverabilityRate || '70-85%'}
           </Text>
-          <Text style={{ fontSize: 10, marginBottom: 3 }}>
-            - Critical issues found: {reportData.businessImpact?.criticalIssuesFound || 0}
+          <Text style={{ fontSize: 11, marginBottom: 6, color: '#1F2937' }}>
+            • Critical issues found: {reportData.businessImpact?.criticalIssuesFound || 1}
           </Text>
-          <Text style={{ fontSize: 10, marginBottom: 3 }}>
-            - Potential improvement: {reportData.businessImpact?.potentialImprovementRate || '95%+'}
+          <Text style={{ fontSize: 11, marginBottom: 6, color: '#1F2937' }}>
+            • Potential improvement: {reportData.businessImpact?.potentialImprovementRate || '95%+'}
           </Text>
-          <Text style={{ fontSize: 10 }}>
-            - Recommended action timeframe: {reportData.businessImpact?.recommendedActionTimeframe || 'Within 24 hours'}
+          <Text style={{ fontSize: 11, color: '#1F2937' }}>
+            • Recommended action timeframe: {reportData.businessImpact?.recommendedActionTimeframe || 'Within 48 hours'}
           </Text>
         </View>
       </View>
@@ -165,16 +213,25 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
         <Text style={styles.sectionTitle}>DNS Record Fixes (Copy-Paste Ready)</Text>
         {reportData.dnsFixesGenerated?.map((fix: any, index: number) => (
           <View key={index} style={styles.dnsFixBox}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
-              <Text style={{ fontSize: 12, fontWeight: 'bold', marginRight: 10 }}>{fix.type}</Text>
-              <Text style={[{ fontSize: 10 }, getPriorityStyle(fix.priority)]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <Text style={{ fontSize: 14, fontWeight: 'bold', marginRight: 15, color: '#1F2937' }}>{fix.type}</Text>
+              <Text style={[{ fontSize: 11, padding: '4 8', borderRadius: 4, backgroundColor: '#FEF3C7' }, getPriorityStyle(fix.priority)]}>
                 {fix.priority} PRIORITY
               </Text>
             </View>
-            <Text style={{ fontSize: 10, color: '#6B7280', marginBottom: 5 }}>{fix.description}</Text>
-            <Text style={{ fontSize: 10, marginBottom: 3 }}>Record Type: {fix.recordType}</Text>
-            <Text style={{ fontSize: 10, marginBottom: 3 }}>Name/Host: {fix.name}</Text>
-            <Text style={{ fontSize: 10, marginBottom: 5 }}>Value:</Text>
+            <Text style={{ fontSize: 11, color: '#4B5563', marginBottom: 10, fontStyle: 'italic' }}>{fix.description}</Text>
+            
+            <View style={{ marginBottom: 6 }}>
+              <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#374151' }}>Record Type: </Text>
+              <Text style={{ fontSize: 10, color: '#6B7280' }}>{fix.recordType}</Text>
+            </View>
+            
+            <View style={{ marginBottom: 6 }}>
+              <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#374151' }}>Name/Host: </Text>
+              <Text style={{ fontSize: 10, color: '#6B7280' }}>{fix.name}</Text>
+            </View>
+            
+            <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#374151', marginBottom: 4 }}>Value (copy this exactly):</Text>
             <Text style={styles.dnsRecord}>{fix.record}</Text>
           </View>
         ))}
@@ -185,79 +242,79 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
         <Text style={styles.sectionTitle}>DNS Provider Setup Instructions</Text>
         
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>GoDaddy Setup:</Text>
+          <Text style={styles.providerTitle}>GoDaddy Setup:</Text>
           {reportData.providerInstructions?.godaddy?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Cloudflare Setup:</Text>
+          <Text style={styles.providerTitle}>Cloudflare Setup:</Text>
           {reportData.providerInstructions?.cloudflare?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Namecheap Setup:</Text>
+          <Text style={styles.providerTitle}>Namecheap Setup:</Text>
           {reportData.providerInstructions?.namecheap?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Amazon Route 53 Setup:</Text>
+          <Text style={styles.providerTitle}>Amazon Route 53 Setup:</Text>
           {reportData.providerInstructions?.route53?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>DigitalOcean Setup:</Text>
+          <Text style={styles.providerTitle}>DigitalOcean Setup:</Text>
           {reportData.providerInstructions?.digitalocean?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Hover Setup:</Text>
+          <Text style={styles.providerTitle}>Hover Setup:</Text>
           {reportData.providerInstructions?.hover?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Network Solutions Setup:</Text>
+          <Text style={styles.providerTitle}>Network Solutions Setup:</Text>
           {reportData.providerInstructions?.networksolutions?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Bluehost Setup:</Text>
+          <Text style={styles.providerTitle}>Bluehost Setup:</Text>
           {reportData.providerInstructions?.bluehost?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>HostGator Setup:</Text>
+          <Text style={styles.providerTitle}>HostGator Setup:</Text>
           {reportData.providerInstructions?.hostgator?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>SiteGround Setup:</Text>
+          <Text style={styles.providerTitle}>SiteGround Setup:</Text>
           {reportData.providerInstructions?.siteground?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>1&1 IONOS Setup:</Text>
+          <Text style={styles.providerTitle}>1&1 IONOS Setup:</Text>
           {reportData.providerInstructions?.['1and1']?.steps?.map((step: string, index: number) => (
-            <Text key={index} style={{ fontSize: 10, marginBottom: 2 }}>{step}</Text>
+            <Text key={index} style={styles.providerStep}>{step}</Text>
           ))}
         </View>
       </View>
@@ -267,7 +324,7 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
         <Text style={styles.sectionTitle}>Email Provider Setup Instructions</Text>
         
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Google Workspace Setup:</Text>
+          <Text style={styles.providerTitle}>Google Workspace Setup:</Text>
           <Text style={{ fontSize: 10, marginBottom: 2 }}>1. Sign in to your Google Admin console (admin.google.com)</Text>
           <Text style={{ fontSize: 10, marginBottom: 2 }}>2. Go to Apps {'>'} Google Workspace {'>'} Gmail</Text>
           <Text style={{ fontSize: 10, marginBottom: 2 }}>3. Click "Authenticate email" and then "Advanced settings"</Text>
@@ -280,7 +337,7 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>Microsoft 365/Outlook Setup:</Text>
+          <Text style={styles.providerTitle}>Microsoft 365/Outlook Setup:</Text>
           <Text style={{ fontSize: 10, marginBottom: 2 }}>1. Sign in to Microsoft 365 Admin Center (admin.microsoft.com)</Text>
           <Text style={{ fontSize: 10, marginBottom: 2 }}>2. Go to Settings {'>'} Domains and select your domain</Text>
           <Text style={{ fontSize: 10, marginBottom: 2 }}>3. Click "DNS records" tab</Text>
@@ -293,7 +350,7 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
         </View>
 
         <View style={styles.providerSection}>
-          <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 5 }}>General Email Provider Notes:</Text>
+          <Text style={styles.providerTitle}>General Email Provider Notes:</Text>
           <Text style={{ fontSize: 10, marginBottom: 2 }}>- Always add DNS records through your domain registrar or DNS hosting provider</Text>
           <Text style={{ fontSize: 10, marginBottom: 2 }}>- Changes can take 24-72 hours to fully propagate across the internet</Text>
           <Text style={{ fontSize: 10, marginBottom: 2 }}>- Test your setup using tools like MXToolbox, DMARC Analyzer, or Mail-Tester</Text>
@@ -304,32 +361,34 @@ export const EnhancedPDFReport: React.FC<EnhancedPDFReportProps> = ({ reportData
 
       {/* Recommendations */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>💡 Priority Recommendations</Text>
+        <Text style={styles.sectionTitle}>Priority Recommendations</Text>
         {reportData.recommendations?.map((rec: any, index: number) => (
           <View key={index} style={styles.recommendationItem}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 3 }}>
-              <Text style={[{ fontSize: 11, fontWeight: 'bold', marginRight: 10 }, getPriorityStyle(rec.priority)]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <Text style={[{ fontSize: 11, fontWeight: 'bold', marginRight: 15, padding: '3 6', borderRadius: 3, backgroundColor: '#FEF3C7' }, getPriorityStyle(rec.priority)]}>
                 {rec.priority}
               </Text>
-              <Text style={{ fontSize: 11, fontWeight: 'bold' }}>{rec.title}</Text>
+              <Text style={{ fontSize: 13, fontWeight: 'bold', color: '#1F2937' }}>{rec.title}</Text>
             </View>
-            <Text style={{ fontSize: 10, marginBottom: 3 }}>{rec.description}</Text>
-            <Text style={{ fontSize: 10, color: '#059669' }}>Impact: {rec.impact}</Text>
-            <Text style={{ fontSize: 10, color: '#6B7280' }}>Time to implement: {rec.timeToImplement}</Text>
+            <Text style={{ fontSize: 11, marginBottom: 8, color: '#4B5563', lineHeight: 1.5 }}>{rec.description}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: 10, color: '#059669', fontWeight: 'bold' }}>Impact: {rec.impact}</Text>
+              <Text style={{ fontSize: 10, color: '#6B7280' }}>Time: {rec.timeToImplement}</Text>
+            </View>
           </View>
         ))}
       </View>
 
       {/* Verification Steps */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>✅ Verification & Testing</Text>
+        <Text style={styles.sectionTitle}>Verification & Testing</Text>
         {reportData.verificationSteps?.map((step: any, index: number) => (
-          <View key={index} style={{ marginBottom: 10 }}>
-            <Text style={{ fontSize: 11, fontWeight: 'bold', marginBottom: 3 }}>
+          <View key={index} style={{ marginBottom: 15, padding: 12, backgroundColor: '#F0F9FF', borderRadius: 6, borderLeft: '3px solid #3B82F6' }}>
+            <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 6, color: '#1F2937' }}>
               Step {step.step}: {step.title}
             </Text>
-            <Text style={{ fontSize: 10, marginBottom: 2 }}>{step.description}</Text>
-            <Text style={{ fontSize: 9, color: '#6B7280' }}>Timeframe: {step.timeFrame}</Text>
+            <Text style={{ fontSize: 11, marginBottom: 6, color: '#4B5563', lineHeight: 1.4 }}>{step.description}</Text>
+            <Text style={{ fontSize: 10, color: '#6B7280', fontStyle: 'italic' }}>Timeframe: {step.timeFrame}</Text>
           </View>
         ))}
       </View>
