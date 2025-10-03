@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface DomainInputProps {
   onSubmit: (domain: string) => void;
@@ -12,6 +12,11 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
   const [domain, setDomain] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const validateDomain = (value: string) => {
     const trimmed = value.trim().toLowerCase();
@@ -68,6 +73,7 @@ export function DomainInput({ onSubmit, isLoading, error }: DomainInputProps) {
                       : 'border-gray-600 hover:border-gray-500'
                   }`}
                   disabled={isLoading}
+                  style={{ caretColor: isMounted && isFocused ? 'white' : 'transparent' }}
                 />
                 
                 {/* Status Icon */}
